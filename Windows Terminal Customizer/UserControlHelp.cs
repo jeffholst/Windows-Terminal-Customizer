@@ -23,7 +23,7 @@ namespace Windows_Terminal_Customizer
 
         public void Populate()
         {
-            webViewCompatible1.Navigate("https://jeffholst.github.io/wtc/");
+            webViewCompatible1.Navigate("https://jeffholst.github.io/Windows-Terminal-Customizer/");
         }
     }
 }
