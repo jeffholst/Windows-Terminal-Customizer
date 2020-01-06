@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
 
 namespace Windows_Terminal_Customizer
 {
@@ -38,7 +39,23 @@ namespace Windows_Terminal_Customizer
 
             if (result == DialogResult.OK)
             {
-                parentSchemesFolderSelected(folderBrowserDialog1.SelectedPath);
+                textBoxSchemeFolder.Text = folderBrowserDialog1.SelectedPath;
+            }
+        }
+
+        private void textBoxSchemeFolder_TextChanged(object sender, EventArgs e)
+        {
+            string msg;
+
+            if (Directory.Exists(textBoxSchemeFolder.Text))
+            {
+                parentSchemesFolderSelected(textBoxSchemeFolder.Text);
+            }
+            else
+            {
+                msg = string.Format("The folder '{0}' does not exist or is not accessible.", textBoxSchemeFolder.Text);
+
+                MessageBox.Show(msg, "Folder does not exist", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -57,7 +74,25 @@ namespace Windows_Terminal_Customizer
             if (result == DialogResult.OK)
             {
                 windowsTerminalFolder = folderBrowserDialog2.SelectedPath;
+                textBoxWindowsTerminalFolder.Text = folderBrowserDialog2.SelectedPath;
+            }
+        }
+
+        private void textBoxWindowsTerminalFolder_TextChanged(object sender, EventArgs e)
+        {
+            windowsTerminalFolder = textBoxWindowsTerminalFolder.Text;
+            
+            string msg;
+
+            if (Directory.Exists(windowsTerminalFolder))
+            {
                 parentWindowsTerminalSelected(windowsTerminalFolder, textBoxWindowsTerminalEXE.Text);
+            }
+            else
+            {
+                msg = string.Format("The folder '{0}' does not exist or is not accessible.", windowsTerminalFolder);
+
+                MessageBox.Show(msg, "Folder does not exist", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

@@ -38,6 +38,16 @@
             this.comboBoxSource = new System.Windows.Forms.ComboBox();
             this.comboBoxScheme = new System.Windows.Forms.ComboBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.comboBoxRotationSchedule = new System.Windows.Forms.ComboBox();
+            this.label11 = new System.Windows.Forms.Label();
+            this.labelRotate = new System.Windows.Forms.Label();
+            this.checkBoxRotateImages = new System.Windows.Forms.CheckBox();
+            this.buttonRotateImageFolder = new System.Windows.Forms.Button();
+            this.textBoxRotateImageFolder = new System.Windows.Forms.TextBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.labelBackgroundOpacity = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
+            this.trackBarBackgroundOpacity = new System.Windows.Forms.TrackBar();
             this.buttonSelectImage = new System.Windows.Forms.Button();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.comboBoxBackgroundImageStretchMode = new System.Windows.Forms.ComboBox();
@@ -51,14 +61,12 @@
             this.label2 = new System.Windows.Forms.Label();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.labelBackgroundOpacity = new System.Windows.Forms.Label();
-            this.label10 = new System.Windows.Forms.Label();
-            this.trackBarBackgroundOpacity = new System.Windows.Forms.TrackBar();
+            this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
             this.groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBarBackgroundOpacity)).BeginInit();
             this.tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarBackgroundImageOpacity)).BeginInit();
             this.groupBox2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBarBackgroundOpacity)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -151,6 +159,13 @@
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.groupBox1.Controls.Add(this.comboBoxRotationSchedule);
+            this.groupBox1.Controls.Add(this.label11);
+            this.groupBox1.Controls.Add(this.labelRotate);
+            this.groupBox1.Controls.Add(this.checkBoxRotateImages);
+            this.groupBox1.Controls.Add(this.buttonRotateImageFolder);
+            this.groupBox1.Controls.Add(this.textBoxRotateImageFolder);
+            this.groupBox1.Controls.Add(this.label9);
             this.groupBox1.Controls.Add(this.labelBackgroundOpacity);
             this.groupBox1.Controls.Add(this.label10);
             this.groupBox1.Controls.Add(this.trackBarBackgroundOpacity);
@@ -163,10 +178,108 @@
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Location = new System.Drawing.Point(28, 198);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(427, 186);
+            this.groupBox1.Size = new System.Drawing.Size(427, 247);
             this.groupBox1.TabIndex = 11;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Background";
+            // 
+            // comboBoxRotationSchedule
+            // 
+            this.comboBoxRotationSchedule.FormattingEnabled = true;
+            this.comboBoxRotationSchedule.Location = new System.Drawing.Point(210, 176);
+            this.comboBoxRotationSchedule.Name = "comboBoxRotationSchedule";
+            this.comboBoxRotationSchedule.Size = new System.Drawing.Size(201, 21);
+            this.comboBoxRotationSchedule.TabIndex = 28;
+            this.comboBoxRotationSchedule.SelectedValueChanged += new System.EventHandler(this.comboBoxRotationSchedule_SelectedValueChanged);
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(108, 180);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(95, 13);
+            this.label11.TabIndex = 27;
+            this.label11.Text = "Rotation Schedule";
+            // 
+            // labelRotate
+            // 
+            this.labelRotate.AutoSize = true;
+            this.labelRotate.Location = new System.Drawing.Point(383, 218);
+            this.labelRotate.Name = "labelRotate";
+            this.labelRotate.Size = new System.Drawing.Size(0, 13);
+            this.labelRotate.TabIndex = 26;
+            // 
+            // checkBoxRotateImages
+            // 
+            this.checkBoxRotateImages.AutoSize = true;
+            this.checkBoxRotateImages.Location = new System.Drawing.Point(6, 178);
+            this.checkBoxRotateImages.Name = "checkBoxRotateImages";
+            this.checkBoxRotateImages.Size = new System.Drawing.Size(95, 17);
+            this.checkBoxRotateImages.TabIndex = 24;
+            this.checkBoxRotateImages.Text = "Rotate Images";
+            this.checkBoxRotateImages.UseVisualStyleBackColor = true;
+            this.checkBoxRotateImages.CheckedChanged += new System.EventHandler(this.checkBoxRotateImages_CheckedChanged);
+            // 
+            // buttonRotateImageFolder
+            // 
+            this.buttonRotateImageFolder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonRotateImageFolder.Location = new System.Drawing.Point(384, 209);
+            this.buttonRotateImageFolder.Name = "buttonRotateImageFolder";
+            this.buttonRotateImageFolder.Size = new System.Drawing.Size(30, 23);
+            this.buttonRotateImageFolder.TabIndex = 23;
+            this.buttonRotateImageFolder.Text = "...";
+            this.buttonRotateImageFolder.UseVisualStyleBackColor = true;
+            this.buttonRotateImageFolder.Click += new System.EventHandler(this.buttonRotateImageFolder_Click);
+            // 
+            // textBoxRotateImageFolder
+            // 
+            this.textBoxRotateImageFolder.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxRotateImageFolder.Location = new System.Drawing.Point(81, 211);
+            this.textBoxRotateImageFolder.Name = "textBoxRotateImageFolder";
+            this.textBoxRotateImageFolder.Size = new System.Drawing.Size(296, 20);
+            this.textBoxRotateImageFolder.TabIndex = 22;
+            this.textBoxRotateImageFolder.TextChanged += new System.EventHandler(this.textBoxRotateImageFolder_TextChanged);
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(7, 214);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(68, 13);
+            this.label9.TabIndex = 21;
+            this.label9.Text = "Image Folder";
+            // 
+            // labelBackgroundOpacity
+            // 
+            this.labelBackgroundOpacity.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.labelBackgroundOpacity.AutoSize = true;
+            this.labelBackgroundOpacity.Location = new System.Drawing.Point(383, 137);
+            this.labelBackgroundOpacity.Name = "labelBackgroundOpacity";
+            this.labelBackgroundOpacity.Size = new System.Drawing.Size(28, 13);
+            this.labelBackgroundOpacity.TabIndex = 20;
+            this.labelBackgroundOpacity.Text = "(1.0)";
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(6, 137);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(104, 13);
+            this.label10.TabIndex = 19;
+            this.label10.Text = "Background Opacity";
+            // 
+            // trackBarBackgroundOpacity
+            // 
+            this.trackBarBackgroundOpacity.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.trackBarBackgroundOpacity.Location = new System.Drawing.Point(116, 137);
+            this.trackBarBackgroundOpacity.Maximum = 100;
+            this.trackBarBackgroundOpacity.Name = "trackBarBackgroundOpacity";
+            this.trackBarBackgroundOpacity.Size = new System.Drawing.Size(261, 45);
+            this.trackBarBackgroundOpacity.TabIndex = 18;
+            this.trackBarBackgroundOpacity.Value = 100;
+            this.trackBarBackgroundOpacity.Scroll += new System.EventHandler(this.trackBarBackgroundOpacity_Scroll);
             // 
             // buttonSelectImage
             // 
@@ -191,7 +304,7 @@
             this.tableLayoutPanel1.Controls.Add(this.label7, 2, 0);
             this.tableLayoutPanel1.Controls.Add(this.comboBoxBackgroundImageAlignment, 1, 0);
             this.tableLayoutPanel1.Controls.Add(this.label6, 0, 0);
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(6, 50);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(6, 51);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
@@ -312,37 +425,6 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "General";
             // 
-            // labelBackgroundOpacity
-            // 
-            this.labelBackgroundOpacity.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.labelBackgroundOpacity.AutoSize = true;
-            this.labelBackgroundOpacity.Location = new System.Drawing.Point(383, 137);
-            this.labelBackgroundOpacity.Name = "labelBackgroundOpacity";
-            this.labelBackgroundOpacity.Size = new System.Drawing.Size(28, 13);
-            this.labelBackgroundOpacity.TabIndex = 20;
-            this.labelBackgroundOpacity.Text = "(1.0)";
-            // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(6, 137);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(104, 13);
-            this.label10.TabIndex = 19;
-            this.label10.Text = "Background Opacity";
-            // 
-            // trackBarBackgroundOpacity
-            // 
-            this.trackBarBackgroundOpacity.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.trackBarBackgroundOpacity.Location = new System.Drawing.Point(116, 137);
-            this.trackBarBackgroundOpacity.Maximum = 100;
-            this.trackBarBackgroundOpacity.Name = "trackBarBackgroundOpacity";
-            this.trackBarBackgroundOpacity.Size = new System.Drawing.Size(261, 45);
-            this.trackBarBackgroundOpacity.TabIndex = 18;
-            this.trackBarBackgroundOpacity.Value = 100;
-            this.trackBarBackgroundOpacity.Scroll += new System.EventHandler(this.trackBarBackgroundOpacity_Scroll);
-            // 
             // UserControlProfile
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -354,14 +436,14 @@
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.button1);
             this.Name = "UserControlProfile";
-            this.Size = new System.Drawing.Size(483, 419);
+            this.Size = new System.Drawing.Size(483, 489);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBarBackgroundOpacity)).EndInit();
             this.tableLayoutPanel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.trackBarBackgroundImageOpacity)).EndInit();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBarBackgroundOpacity)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -394,5 +476,13 @@
         private System.Windows.Forms.Label labelBackgroundOpacity;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.TrackBar trackBarBackgroundOpacity;
+        private System.Windows.Forms.Button buttonRotateImageFolder;
+        private System.Windows.Forms.TextBox textBoxRotateImageFolder;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.CheckBox checkBoxRotateImages;
+        private System.Windows.Forms.ComboBox comboBoxRotationSchedule;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Label labelRotate;
+        private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
     }
 }

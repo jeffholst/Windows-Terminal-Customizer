@@ -32,10 +32,15 @@ namespace Windows_Terminal_Customizer
         private bool removeUnusedSchemes;       // remove unused schemes from JSON file
         private bool writeToFile = false;       // write to file on next timer interval
         private Timer writeToFileTimer;         // timer used to write to file
+        private CustomizerTimer myTimer;
+        private CustomProfile myCustomProfile;
+        private int minutesRunning = 0;
 
         public Form1()
         {
             InitializeComponent();
+            myCustomProfile = LoadCustomProfile();
+            myTimer = new CustomizerTimer(this, userControlProfile1);
             Setup();
         }
 
@@ -220,6 +225,8 @@ namespace Windows_Terminal_Customizer
 
         private void TreeViewNodeClicked()
         {
+            CustomItem customItem;
+
             treeView1.ContextMenuStrip = null;
 
             if (treeView1.SelectedNode != null)
@@ -234,7 +241,8 @@ namespace Windows_Terminal_Customizer
                     {
                         case 1:
                             SetCurrentDialog(Dialogs.Profile);
-                            userControlProfile1.Populate(settings.profiles[treeView1.SelectedNode.Index], treeView1.SelectedNode);
+                            customItem = GetCustomItemByGUID(settings.profiles[treeView1.SelectedNode.Index].guid);
+                            userControlProfile1.Populate(settings.profiles[treeView1.SelectedNode.Index], treeView1.SelectedNode, customItem);
                             break;
                         case 2:
                             SetCurrentDialog(Dialogs.Scheme);
@@ -360,12 +368,14 @@ namespace Windows_Terminal_Customizer
 
         public void profileUpdated(Profile profile, TreeNode treeNode)
         {
-            treeNode.Text = profile.name;
-            //settings.profiles[treeNode.Index] = profile;
+            if (treeNode != null)
+            {
+                treeNode.Text = profile.name;
+            }
 
-            var foundProfile = settings.schemes.Where(s => s.name == profile.colorScheme);
+            var foundScheme = settings.schemes.Where(s => s.name == profile.colorScheme);
 
-            if (foundProfile.Count() != 1)  // Add Scheme if not already present
+            if (foundScheme.Count() != 1)  // Add Scheme if not already present
             {
                 var scheme = schemes.Where(s => s.name == profile.colorScheme);
 
@@ -529,11 +539,202 @@ namespace Windows_Terminal_Customizer
                 treeView1.SelectedNode.Remove();
             }
         }
+
+        public void SaveRotationInformation(string GUID, bool rotateImages, string folder, int rotateMinutes)
+        {
+            CustomItem item;
+            CustomProfile cp;
+            
+            cp = LoadCustomProfile();
+
+            item = GetCustomItemByGUID(GUID);
+
+            if (item != null)
+            {
+                item.rotateImages = rotateImages;
+                item.rotationFolder = folder;
+                item.rotationMinutes = rotateMinutes;
+
+                SaveCustomProfile(cp);
+                myCustomProfile = LoadCustomProfile();
+            }
+        }
+
+        private void SaveCustomProfile(CustomProfile cp)
+        {
+            string fqp;
+            string json;
+
+            fqp = GetCustomProfilePath();
+
+            json = JsonConvert.SerializeObject(cp,
+                    Formatting.Indented,
+                    new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+
+            File.WriteAllText(fqp, json);
+        }
+
+        private CustomProfile LoadCustomProfile()
+        {
+            string fqp;
+            CustomProfile cp = null;
+
+            fqp = GetCustomProfilePath();
+
+            if ( !File.Exists(fqp))
+            {
+                CreateDefaultCustomProfile(fqp);
+            }
+
+            using (StreamReader file = File.OpenText(fqp))
+            {
+                JsonSerializer serializer = new JsonSerializer();
+                cp = (CustomProfile)serializer.Deserialize(file, typeof(CustomProfile));
+            }
+
+            return (cp);
+        }
+
+        private void CreateDefaultCustomProfile(string fqp)
+        {
+            CustomItem item;
+            CustomProfile cp;
+            
+            cp = new CustomProfile();
+            cp.items = new List<CustomItem>();
+
+            foreach(Profile profile in settings.profiles)
+            {
+                item = new CustomItem();
+                item.guid = profile.guid;
+                item.rotateImages = false;
+                item.rotationMinutes = 15;
+                item.rotationFolder = string.Empty;
+
+                cp.items.Add(item);
+            }
+
+            SaveCustomProfile(cp);
+        }
+
+        private string GetCustomProfilePath()
+        {
+            string path;
+            string exePath;
+
+            exePath = System.Reflection.Assembly.GetEntryAssembly().Location;
+
+            path = Path.Combine(Path.GetDirectoryName(exePath), "custom-profile.json");
+
+            return (path);
+        }
+
+        public void CheckRotations(out string newImage)
+        {
+            int mod;
+            Profile profile;
+            string randomImage;
+
+            newImage = string.Empty;
+
+            minutesRunning++;
+
+            foreach(CustomItem item in myCustomProfile.items)
+            {
+                mod = minutesRunning % item.rotationMinutes;
+
+                if ( mod == 0)
+                {
+                    randomImage = GetRandomImage(item.rotationFolder);
+
+                    if ( !string.IsNullOrEmpty(randomImage) && File.Exists(randomImage))
+                    {
+                        profile = GetProfileByGUID(item.guid);
+
+                        if (profile != null)
+                        {
+                            profile.backgroundImage = randomImage;
+                            newImage = randomImage;
+                            profileUpdated(profile, null);
+                        }
+                    }
+                }
+            }
+        }
+
+        private CustomItem GetCustomItemByGUID(string GUID)
+        {
+            CustomItem customItem = null;
+
+            var customItems = myCustomProfile.items.Where(i => i.guid == GUID);
+
+            if (customItems != null && customItems.Count() > 0)
+            {
+                customItem = customItems.First();
+            }
+
+            return (customItem);
+        }
+
+        private Profile GetProfileByGUID(string GUID)
+        {
+            Profile profile = null;
+
+            var foundProfiles = settings.profiles.Where(p => p.guid == GUID);
+
+            if ( foundProfiles != null && foundProfiles.Count() > 0)
+            {
+                profile = foundProfiles.First();
+            }
+
+            return (profile);
+        }
+
+        private string GetRandomImage(string imagePath)
+        {
+            Random random;
+            int randomIndex;
+            FileInfo[] files;
+            string randomImage;
+            string[] extensions;
+
+            extensions = new string[] { ".jpg", ".gif", ".png", ".jpeg" };
+
+            randomImage = string.Empty;
+
+            if (!string.IsNullOrEmpty(imagePath) && Directory.Exists(imagePath))
+            {
+                files = new DirectoryInfo(imagePath).EnumerateFiles()
+                    .Where(f => extensions.Contains(f.Extension.ToLower()))
+                    .ToArray();
+
+                random = new Random();
+
+                randomIndex = random.Next(0, files.Length - 1);
+
+                randomImage = files[randomIndex].FullName;
+            }
+
+            return (randomImage);
+        }
     }
 
     public class Source
     {
         public string Name { get; set; }
         public string Value { get; set; }
+    }
+
+    public class CustomProfile
+    {
+        public List<CustomItem> items { get; set; }
+    }
+
+    public class CustomItem
+    {
+        public string guid { get; set; }
+        public bool rotateImages { get; set; }
+        public int rotationMinutes { get; set; }
+        public string rotationFolder { get; set; }
     }
 }

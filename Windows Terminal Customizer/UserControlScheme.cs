@@ -705,8 +705,8 @@ namespace Windows_Terminal_Customizer
 
         private void UpdatePreview()
         {
+            string tmp;
             int rows, cols;
-            string text, tmp;
             string html, style, table; ;
 
             string[] labels = new string[] {"Foreground", "Background", "White", "BrightWhite", "Black", "BrightBlack",

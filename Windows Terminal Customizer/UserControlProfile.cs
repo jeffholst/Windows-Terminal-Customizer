@@ -17,6 +17,7 @@ namespace Windows_Terminal_Customizer
         Profile profile;
         TreeNode treeNode;
         bool populating = false;
+        private delegate void SafeCallDelegate(string text);
 
         public UserControlProfile()
         {
@@ -26,6 +27,8 @@ namespace Windows_Terminal_Customizer
             PopulateSourceCombo();
             PopulateBackgroundImageAlignment();
             PopulateBackgroundImageStretchMode();
+            PopulateRotationSchedule();
+
             populating = false;
         }
 
@@ -79,7 +82,25 @@ namespace Windows_Terminal_Customizer
             comboBoxBackgroundImageStretchMode.SelectedValue = "uniformToFill";
         }
 
-        public void Populate(Profile profile, TreeNode selectedTreeNode)
+        private void PopulateRotationSchedule()
+        {
+            var dataSource = new List<Source>();
+            dataSource.Add(new Source() { Name = "Every Minute", Value = "1" });
+            dataSource.Add(new Source() { Name = "Every 5 Minutes", Value = "5" });
+            dataSource.Add(new Source() { Name = "Every 10 Minutes", Value = "10" });
+            dataSource.Add(new Source() { Name = "Every 15 Minutes", Value = "15" });
+            dataSource.Add(new Source() { Name = "Every 30 Minutes", Value = "30" });
+            dataSource.Add(new Source() { Name = "Every Hour", Value = "60" });
+            dataSource.Add(new Source() { Name = "Every 2 Hours", Value = "120" });
+            dataSource.Add(new Source() { Name = "Every 4 Hours", Value = "240" });
+            comboBoxRotationSchedule.DataSource = dataSource;
+            comboBoxRotationSchedule.DisplayMember = "Name";
+            comboBoxRotationSchedule.ValueMember = "Value";
+
+            comboBoxRotationSchedule.SelectedValue = "15";
+        }
+
+        public void Populate(Profile profile, TreeNode selectedTreeNode, CustomItem customItem)
         {
             populating = true;
 
@@ -146,6 +167,27 @@ namespace Windows_Terminal_Customizer
             {
                 trackBarBackgroundOpacity.Value = (int)(profile.acrylicOpacity * 100);
                 SetTrackBarBackgroundOpacityLabel();
+            }
+
+            checkBoxRotateImages.Checked = customItem.rotateImages;
+            comboBoxRotationSchedule.SelectedValue = customItem.rotationMinutes.ToString();
+            textBoxRotateImageFolder.Text = customItem.rotationFolder;
+
+            populating = false;
+        }
+
+        public void UpdateImageTextbox(string imagePath)
+        {
+            populating = true;
+
+            if (textBoxBackgroundImage.InvokeRequired)
+            {
+                var d = new SafeCallDelegate(UpdateImageTextbox);
+                textBoxBackgroundImage.Invoke(d, new object[] { imagePath });
+            }
+            else
+            {
+                textBoxBackgroundImage.Text = imagePath;
             }
 
             populating = false;
@@ -270,6 +312,47 @@ namespace Windows_Terminal_Customizer
             }
 
             _parent.profileUpdated(profile, treeNode);
+        }
+
+        private void buttonRotateImageFolder_Click(object sender, EventArgs e)
+        {
+            var result = folderBrowserDialog1.ShowDialog();
+
+            if (result == DialogResult.OK)
+            {
+                textBoxRotateImageFolder.Text = folderBrowserDialog1.SelectedPath;
+            }
+        }
+
+        private void checkBoxRotateImages_CheckedChanged(object sender, EventArgs e)
+        {
+            SaveRotationInformation();
+        }
+
+        private void comboBoxRotationSchedule_SelectedValueChanged(object sender, EventArgs e)
+        {
+            SaveRotationInformation();
+        }
+
+        private void textBoxRotateImageFolder_TextChanged(object sender, EventArgs e)
+        {
+            if (!populating)
+            {
+                SaveRotationInformation();
+            }
+        }
+
+        private void SaveRotationInformation()
+        {
+            int minutes;
+
+            if (Directory.Exists(textBoxRotateImageFolder.Text))
+            {
+                minutes = System.Convert.ToInt32(comboBoxRotationSchedule.SelectedValue.ToString());
+
+                _parent.SaveRotationInformation(textBoxGUID.Text, checkBoxRotateImages.Checked, 
+                    textBoxRotateImageFolder.Text, minutes);
+            }
         }
     }
 }
