@@ -58,7 +58,7 @@ namespace Windows_Terminal_Customizer
         public string scrollbarState { get; set; }
         public string selectionBackground { get; set; }
         public bool snapOnInput { get; set; } = true;
-        public string startingDirectory { get; set; }
+        public string startingDirectory { get; set; } = ".";
         public bool suppressApplicationTitle { get; set; } = false;
         public string tabTitle { get; set; }
         public bool useAcrylic { get; set; } = false;
