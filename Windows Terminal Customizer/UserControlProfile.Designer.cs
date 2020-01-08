@@ -35,9 +35,10 @@
             this.label5 = new System.Windows.Forms.Label();
             this.textBoxName = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
-            this.comboBoxSource = new System.Windows.Forms.ComboBox();
+            this.comboBoxCommandLine = new System.Windows.Forms.ComboBox();
             this.comboBoxScheme = new System.Windows.Forms.ComboBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.checkBoxRotateSchemes = new System.Windows.Forms.CheckBox();
             this.comboBoxRotationSchedule = new System.Windows.Forms.ComboBox();
             this.label11 = new System.Windows.Forms.Label();
             this.labelRotate = new System.Windows.Forms.Label();
@@ -61,7 +62,10 @@
             this.label2 = new System.Windows.Forms.Label();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.linkLabelScheme = new System.Windows.Forms.LinkLabel();
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
+            this.label12 = new System.Windows.Forms.Label();
+            this.textBoxSource = new System.Windows.Forms.TextBox();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarBackgroundOpacity)).BeginInit();
             this.tableLayoutPanel1.SuspendLayout();
@@ -72,7 +76,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(24, 22);
+            this.label1.Location = new System.Drawing.Point(30, 22);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(34, 13);
             this.label1.TabIndex = 0;
@@ -82,15 +86,15 @@
             // 
             this.textBoxGUID.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxGUID.Location = new System.Drawing.Point(64, 19);
+            this.textBoxGUID.Location = new System.Drawing.Point(77, 19);
             this.textBoxGUID.Name = "textBoxGUID";
-            this.textBoxGUID.Size = new System.Drawing.Size(346, 20);
+            this.textBoxGUID.Size = new System.Drawing.Size(333, 20);
             this.textBoxGUID.TabIndex = 1;
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(13, 101);
+            this.label3.Location = new System.Drawing.Point(18, 130);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(46, 13);
             this.label3.TabIndex = 3;
@@ -99,7 +103,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(23, 48);
+            this.label4.Location = new System.Drawing.Point(29, 48);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(35, 13);
             this.label4.TabIndex = 5;
@@ -108,19 +112,19 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(17, 74);
+            this.label5.Location = new System.Drawing.Point(10, 101);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(41, 13);
+            this.label5.Size = new System.Drawing.Size(54, 13);
             this.label5.TabIndex = 6;
-            this.label5.Text = "Source";
+            this.label5.Text = "Command";
             // 
             // textBoxName
             // 
             this.textBoxName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxName.Location = new System.Drawing.Point(64, 45);
+            this.textBoxName.Location = new System.Drawing.Point(77, 45);
             this.textBoxName.Name = "textBoxName";
-            this.textBoxName.Size = new System.Drawing.Size(346, 20);
+            this.textBoxName.Size = new System.Drawing.Size(333, 20);
             this.textBoxName.TabIndex = 7;
             // 
             // button1
@@ -133,24 +137,24 @@
             this.button1.Text = "Make Default";
             this.button1.UseVisualStyleBackColor = true;
             // 
-            // comboBoxSource
+            // comboBoxCommandLine
             // 
-            this.comboBoxSource.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.comboBoxCommandLine.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboBoxSource.FormattingEnabled = true;
-            this.comboBoxSource.Location = new System.Drawing.Point(64, 71);
-            this.comboBoxSource.Name = "comboBoxSource";
-            this.comboBoxSource.Size = new System.Drawing.Size(346, 21);
-            this.comboBoxSource.TabIndex = 9;
+            this.comboBoxCommandLine.FormattingEnabled = true;
+            this.comboBoxCommandLine.Location = new System.Drawing.Point(77, 98);
+            this.comboBoxCommandLine.Name = "comboBoxCommandLine";
+            this.comboBoxCommandLine.Size = new System.Drawing.Size(333, 21);
+            this.comboBoxCommandLine.TabIndex = 9;
             // 
             // comboBoxScheme
             // 
             this.comboBoxScheme.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBoxScheme.FormattingEnabled = true;
-            this.comboBoxScheme.Location = new System.Drawing.Point(64, 98);
+            this.comboBoxScheme.Location = new System.Drawing.Point(77, 127);
             this.comboBoxScheme.Name = "comboBoxScheme";
-            this.comboBoxScheme.Size = new System.Drawing.Size(346, 21);
+            this.comboBoxScheme.Size = new System.Drawing.Size(333, 21);
             this.comboBoxScheme.TabIndex = 10;
             this.comboBoxScheme.SelectedValueChanged += new System.EventHandler(this.comboBoxScheme_SelectedValueChanged);
             // 
@@ -159,6 +163,7 @@
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.groupBox1.Controls.Add(this.checkBoxRotateSchemes);
             this.groupBox1.Controls.Add(this.comboBoxRotationSchedule);
             this.groupBox1.Controls.Add(this.label11);
             this.groupBox1.Controls.Add(this.labelRotate);
@@ -176,30 +181,41 @@
             this.groupBox1.Controls.Add(this.trackBarBackgroundImageOpacity);
             this.groupBox1.Controls.Add(this.textBoxBackgroundImage);
             this.groupBox1.Controls.Add(this.label2);
-            this.groupBox1.Location = new System.Drawing.Point(28, 198);
+            this.groupBox1.Location = new System.Drawing.Point(28, 238);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(427, 247);
             this.groupBox1.TabIndex = 11;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Background";
             // 
+            // checkBoxRotateSchemes
+            // 
+            this.checkBoxRotateSchemes.AutoSize = true;
+            this.checkBoxRotateSchemes.Location = new System.Drawing.Point(110, 179);
+            this.checkBoxRotateSchemes.Name = "checkBoxRotateSchemes";
+            this.checkBoxRotateSchemes.Size = new System.Drawing.Size(105, 17);
+            this.checkBoxRotateSchemes.TabIndex = 29;
+            this.checkBoxRotateSchemes.Text = "Rotate Schemes";
+            this.checkBoxRotateSchemes.UseVisualStyleBackColor = true;
+            this.checkBoxRotateSchemes.CheckedChanged += new System.EventHandler(this.checkBoxRotateSchemes_CheckedChanged);
+            // 
             // comboBoxRotationSchedule
             // 
             this.comboBoxRotationSchedule.FormattingEnabled = true;
-            this.comboBoxRotationSchedule.Location = new System.Drawing.Point(210, 176);
+            this.comboBoxRotationSchedule.Location = new System.Drawing.Point(281, 177);
             this.comboBoxRotationSchedule.Name = "comboBoxRotationSchedule";
-            this.comboBoxRotationSchedule.Size = new System.Drawing.Size(201, 21);
+            this.comboBoxRotationSchedule.Size = new System.Drawing.Size(130, 21);
             this.comboBoxRotationSchedule.TabIndex = 28;
             this.comboBoxRotationSchedule.SelectedValueChanged += new System.EventHandler(this.comboBoxRotationSchedule_SelectedValueChanged);
             // 
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(108, 180);
+            this.label11.Location = new System.Drawing.Point(223, 181);
             this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(95, 13);
+            this.label11.Size = new System.Drawing.Size(52, 13);
             this.label11.TabIndex = 27;
-            this.label11.Text = "Rotation Schedule";
+            this.label11.Text = "Schedule";
             // 
             // labelRotate
             // 
@@ -212,7 +228,7 @@
             // checkBoxRotateImages
             // 
             this.checkBoxRotateImages.AutoSize = true;
-            this.checkBoxRotateImages.Location = new System.Drawing.Point(6, 178);
+            this.checkBoxRotateImages.Location = new System.Drawing.Point(6, 179);
             this.checkBoxRotateImages.Name = "checkBoxRotateImages";
             this.checkBoxRotateImages.Size = new System.Drawing.Size(95, 17);
             this.checkBoxRotateImages.TabIndex = 24;
@@ -410,20 +426,53 @@
             // 
             this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox2.Controls.Add(this.textBoxSource);
+            this.groupBox2.Controls.Add(this.label12);
+            this.groupBox2.Controls.Add(this.linkLabelScheme);
             this.groupBox2.Controls.Add(this.textBoxGUID);
             this.groupBox2.Controls.Add(this.label1);
             this.groupBox2.Controls.Add(this.comboBoxScheme);
             this.groupBox2.Controls.Add(this.label3);
-            this.groupBox2.Controls.Add(this.comboBoxSource);
+            this.groupBox2.Controls.Add(this.comboBoxCommandLine);
             this.groupBox2.Controls.Add(this.label4);
             this.groupBox2.Controls.Add(this.label5);
             this.groupBox2.Controls.Add(this.textBoxName);
             this.groupBox2.Location = new System.Drawing.Point(28, 42);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(426, 141);
+            this.groupBox2.Size = new System.Drawing.Size(426, 180);
             this.groupBox2.TabIndex = 12;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "General";
+            // 
+            // linkLabelScheme
+            // 
+            this.linkLabelScheme.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.linkLabelScheme.AutoSize = true;
+            this.linkLabelScheme.Location = new System.Drawing.Point(338, 154);
+            this.linkLabelScheme.Name = "linkLabelScheme";
+            this.linkLabelScheme.Size = new System.Drawing.Size(72, 13);
+            this.linkLabelScheme.TabIndex = 13;
+            this.linkLabelScheme.TabStop = true;
+            this.linkLabelScheme.Text = "View Scheme";
+            this.linkLabelScheme.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelScheme_LinkClicked);
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(23, 74);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(41, 13);
+            this.label12.TabIndex = 13;
+            this.label12.Text = "Source";
+            // 
+            // textBoxSource
+            // 
+            this.textBoxSource.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxSource.Location = new System.Drawing.Point(77, 71);
+            this.textBoxSource.Name = "textBoxSource";
+            this.textBoxSource.Size = new System.Drawing.Size(333, 20);
+            this.textBoxSource.TabIndex = 14;
             // 
             // UserControlProfile
             // 
@@ -436,7 +485,7 @@
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.button1);
             this.Name = "UserControlProfile";
-            this.Size = new System.Drawing.Size(483, 489);
+            this.Size = new System.Drawing.Size(483, 498);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarBackgroundOpacity)).EndInit();
@@ -457,7 +506,7 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox textBoxName;
         private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.ComboBox comboBoxSource;
+        private System.Windows.Forms.ComboBox comboBoxCommandLine;
         private System.Windows.Forms.ComboBox comboBoxScheme;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.ComboBox comboBoxBackgroundImageAlignment;
@@ -484,5 +533,9 @@
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.Label labelRotate;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
+        private System.Windows.Forms.CheckBox checkBoxRotateSchemes;
+        private System.Windows.Forms.LinkLabel linkLabelScheme;
+        private System.Windows.Forms.TextBox textBoxSource;
+        private System.Windows.Forms.Label label12;
     }
 }

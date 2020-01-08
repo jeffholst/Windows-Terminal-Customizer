@@ -43,6 +43,7 @@ namespace Windows_Terminal_Customizer
         public string backgroundImageStretchMode { get; set; }
         public string closeOnExit { get; set; }
         public List<string> colorTable { get; set; }
+        [JsonProperty(PropertyName = "commandline")]
         public string commandLine { get; set; }
         public string cursorColor { get; set; }
         public string cursorHeight { get; set; }

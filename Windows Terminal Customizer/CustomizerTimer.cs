@@ -10,13 +10,11 @@ namespace Windows_Terminal_Customizer
     public class CustomizerTimer
     {
         Form1 _parent;
-        UserControlProfile _uProfile;
         private Timer myTimer;
 
         public CustomizerTimer(Form1 parent, UserControlProfile uProfile)
         {
             _parent = parent;
-            _uProfile = uProfile;
 
             myTimer = new Timer();
             myTimer.Interval = 60000;
@@ -25,16 +23,19 @@ namespace Windows_Terminal_Customizer
             myTimer.Enabled = true;
         }
 
+        public void Stop()
+        {
+            myTimer.Enabled = false;
+        }
+
+        public void Start()
+        {
+            myTimer.Enabled = true;
+        }
+
         private void OnTimedEvent(Object source, System.Timers.ElapsedEventArgs e)
         {
-            string newImage;
-
-            _parent.CheckRotations(out newImage);
-
-            if ( !string.IsNullOrEmpty(newImage))
-            {
-                _uProfile.UpdateImageTextbox(newImage);
-            }
+           _parent.CheckRotations(false);
         }
     }
 }

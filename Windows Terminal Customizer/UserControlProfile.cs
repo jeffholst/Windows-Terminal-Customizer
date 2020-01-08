@@ -17,14 +17,14 @@ namespace Windows_Terminal_Customizer
         Profile profile;
         TreeNode treeNode;
         bool populating = false;
-        private delegate void SafeCallDelegate(string text);
+        private delegate void SafeCallDelegate(string text, string guid);
 
         public UserControlProfile()
         {
             InitializeComponent();
 
             populating = true;
-            PopulateSourceCombo();
+            PopulateCommandlineCombo();
             PopulateBackgroundImageAlignment();
             PopulateBackgroundImageStretchMode();
             PopulateRotationSchedule();
@@ -37,16 +37,16 @@ namespace Windows_Terminal_Customizer
             this._parent = parent;
         }
 
-        private void PopulateSourceCombo()
+        private void PopulateCommandlineCombo()
         {
             var dataSource = new List<Source>();
-            dataSource.Add(new Source() { Name = "Azure", Value = "Windows.Terminal.Azure" });
-            dataSource.Add(new Source() { Name = "Cmd", Value = "Windows.Terminal.Cmd" });
-            dataSource.Add(new Source() { Name = "PowerShell", Value = "Windows.Terminal.PowerShell" });
-            dataSource.Add(new Source() { Name = "Wsl", Value = "Windows.Terminal.Wsl" });
-            comboBoxSource.DataSource = dataSource;
-            comboBoxSource.DisplayMember = "Name";
-            comboBoxSource.ValueMember = "Value";
+            dataSource.Add(new Source() { Name = "Azure Cloud Shell", Value = "Azure" });
+            dataSource.Add(new Source() { Name = "Cmd", Value = "cmd.exe" });
+            dataSource.Add(new Source() { Name = "PowerShell", Value = "powershell.exe" });
+            dataSource.Add(new Source() { Name = "WSL", Value = "wsl.exe" });
+            comboBoxCommandLine.DataSource = dataSource;
+            comboBoxCommandLine.DisplayMember = "Name";
+            comboBoxCommandLine.ValueMember = "Value";
         }
 
         private void PopulateBackgroundImageAlignment()
@@ -110,7 +110,15 @@ namespace Windows_Terminal_Customizer
             textBoxGUID.Text = profile.guid;
             textBoxName.Text = profile.name;
 
-            comboBoxSource.SelectedValue = profile.source;
+            if (!string.IsNullOrEmpty(profile.source))
+            {
+                textBoxSource.Text = profile.source;
+            }
+
+            if (!string.IsNullOrEmpty(profile.commandLine))
+            {
+                comboBoxCommandLine.SelectedValue = profile.commandLine;
+            }
 
             if ( !string.IsNullOrEmpty(profile.colorScheme) )
             {
@@ -169,28 +177,62 @@ namespace Windows_Terminal_Customizer
                 SetTrackBarBackgroundOpacityLabel();
             }
 
-            checkBoxRotateImages.Checked = customItem.rotateImages;
-            comboBoxRotationSchedule.SelectedValue = customItem.rotationMinutes.ToString();
-            textBoxRotateImageFolder.Text = customItem.rotationFolder;
+            if (customItem != null)
+            {
+                checkBoxRotateImages.Checked = (customItem.rotateImages != null && customItem.rotateImages == true) ? true : false;
+                checkBoxRotateSchemes.Checked = (customItem.rotateSchemes != null && customItem.rotateSchemes == true) ? true : false;
+                comboBoxRotationSchedule.SelectedValue = customItem.rotationMinutes.ToString();
+                textBoxRotateImageFolder.Text = customItem.rotationFolder;
+            }
+            else
+            {
+                checkBoxRotateImages.Checked = false;
+                checkBoxRotateSchemes.Checked = false;
+                comboBoxRotationSchedule.SelectedItem = "15";
+                textBoxRotateImageFolder.Text = string.Empty;
+            }
 
             populating = false;
         }
 
-        public void UpdateImageTextbox(string imagePath)
+        public void UpdateSchemeCombo(string schemeName, string guid)
         {
             populating = true;
 
-            if (textBoxBackgroundImage.InvokeRequired)
+            if (comboBoxScheme.InvokeRequired)
             {
-                var d = new SafeCallDelegate(UpdateImageTextbox);
-                textBoxBackgroundImage.Invoke(d, new object[] { imagePath });
+                var d = new SafeCallDelegate(UpdateSchemeCombo);
+                comboBoxScheme.Invoke(d, new object[] { schemeName, guid });
             }
             else
             {
-                textBoxBackgroundImage.Text = imagePath;
+                if (comboBoxScheme.Items.Contains(schemeName))
+                {
+                    comboBoxScheme.SelectedItem = schemeName;
+                }
             }
 
             populating = false;
+        }
+
+        public void UpdateImageTextbox(string imagePath, string guid)
+        {
+            if (guid == textBoxGUID.Text)
+            {
+                populating = true;
+
+                if (textBoxBackgroundImage.InvokeRequired)
+                {
+                    var d = new SafeCallDelegate(UpdateImageTextbox);
+                    textBoxBackgroundImage.Invoke(d, new object[] { imagePath, guid });
+                }
+                else
+                {
+                    textBoxBackgroundImage.Text = imagePath;
+                }
+
+                populating = false;
+            }
         }
 
         public void UpdateSchemes(List<Scheme> schemes)
@@ -211,7 +253,7 @@ namespace Windows_Terminal_Customizer
             {
                 profile.colorScheme = comboBoxScheme.SelectedItem.ToString();
 
-                _parent.profileUpdated(profile, treeNode);
+                ProfileUpdated();
             }
         }
 
@@ -236,7 +278,7 @@ namespace Windows_Terminal_Customizer
         {
             SetTrackBarImageOpacityLabel();
             profile.backgroundImageOpacity = trackBarBackgroundImageOpacity.Value / 100.0;
-            _parent.profileUpdated(profile, treeNode);
+            ProfileUpdated();
         }
 
         private void SetTrackBarImageOpacityLabel()
@@ -271,7 +313,7 @@ namespace Windows_Terminal_Customizer
                 profile.backgroundImage = textBoxBackgroundImage.Text;
             }
 
-            _parent.profileUpdated(profile, treeNode);
+            ProfileUpdated();
         }
 
         private void comboBoxBackgroundImageAlignment_SelectedValueChanged(object sender, EventArgs e)
@@ -280,7 +322,7 @@ namespace Windows_Terminal_Customizer
             {
                 profile.backgroundImageAlignment = comboBoxBackgroundImageAlignment.SelectedValue.ToString();
 
-                _parent.profileUpdated(profile, treeNode);
+                ProfileUpdated();
             }
         }
 
@@ -290,6 +332,14 @@ namespace Windows_Terminal_Customizer
             {
                 profile.backgroundImageStretchMode = comboBoxBackgroundImageStretchMode.SelectedValue.ToString();
 
+                ProfileUpdated();
+            }
+        }
+
+        private void ProfileUpdated()
+        {
+            if (!populating)
+            {
                 _parent.profileUpdated(profile, treeNode);
             }
         }
@@ -311,7 +361,7 @@ namespace Windows_Terminal_Customizer
                 profile.useAcrylic = true;
             }
 
-            _parent.profileUpdated(profile, treeNode);
+            ProfileUpdated();
         }
 
         private void buttonRotateImageFolder_Click(object sender, EventArgs e)
@@ -326,7 +376,18 @@ namespace Windows_Terminal_Customizer
 
         private void checkBoxRotateImages_CheckedChanged(object sender, EventArgs e)
         {
-            SaveRotationInformation();
+            if (!populating)
+            {
+                SaveRotationInformation();
+            }
+        }
+
+        private void checkBoxRotateSchemes_CheckedChanged(object sender, EventArgs e)
+        {
+            if (!populating)
+            {
+                SaveRotationInformation();
+            }
         }
 
         private void comboBoxRotationSchedule_SelectedValueChanged(object sender, EventArgs e)
@@ -350,9 +411,14 @@ namespace Windows_Terminal_Customizer
             {
                 minutes = System.Convert.ToInt32(comboBoxRotationSchedule.SelectedValue.ToString());
 
-                _parent.SaveRotationInformation(textBoxGUID.Text, checkBoxRotateImages.Checked, 
+                _parent.SaveRotationInformation(textBoxGUID.Text, checkBoxRotateImages.Checked, checkBoxRotateSchemes.Checked,
                     textBoxRotateImageFolder.Text, minutes);
             }
+        }
+
+        private void linkLabelScheme_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            _parent.ViewScheme(comboBoxScheme.SelectedItem.ToString());
         }
     }
 }

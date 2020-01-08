@@ -34,19 +34,24 @@ namespace Windows_Terminal_Customizer
         private Timer writeToFileTimer;         // timer used to write to file
         private CustomizerTimer myTimer;
         private CustomProfile myCustomProfile;
-        private int minutesRunning = 0;
+        private int minutesRunning;
+        private bool pauseRotations;
+
+        private delegate void SafeCallDelegate(TreeNodeCollection nodes, string schemeName);
+        private delegate void SafeCallDelegateRemoveNode(TreeNodeCollection nodes, TreeNode node);
 
         public Form1()
         {
             InitializeComponent();
-            myCustomProfile = LoadCustomProfile();
-            myTimer = new CustomizerTimer(this, userControlProfile1);
             Setup();
         }
 
         private void Setup()
         {
             string lastFile;
+
+            minutesRunning = 0;
+            pauseRotations = false;
 
             debug = GetTrueOrFalseAppSetting("Debug", false);
 
@@ -78,6 +83,11 @@ namespace Windows_Terminal_Customizer
             userControlSettings1.Setup(this, schemesFolder, windowsTerminalFolder, windowsTerminalEXE, removeUnusedSchemes);
             userControlProfile1.Setup(this);
             userControlScheme1.Setup(this);
+
+            myCustomProfile = LoadCustomProfile();
+            ReconcileCustomProfile();
+
+            myTimer = new CustomizerTimer(this, userControlProfile1);
 
             writeToFileTimer = new Timer();
             writeToFileTimer.Tick += new EventHandler(WriteToFile);
@@ -112,7 +122,7 @@ namespace Windows_Terminal_Customizer
                 userControlScheme1.Visible = false;
                 userControlKeyBinding1.Visible = false;
 
-                switch(currentDialog)
+                switch (currentDialog)
                 {
                     case Dialogs.Help:
                         userControlHelp1.Visible = true;
@@ -319,7 +329,7 @@ namespace Windows_Terminal_Customizer
         {
             string fqp;
 
-            if ( !string.IsNullOrEmpty(folder) && Directory.Exists(folder) && !string.IsNullOrEmpty(exe))
+            if (!string.IsNullOrEmpty(folder) && Directory.Exists(folder) && !string.IsNullOrEmpty(exe))
             {
                 windowsTerminalEXE = exe;
                 fqp = Path.Combine(folder, windowsTerminalEXE);
@@ -373,22 +383,40 @@ namespace Windows_Terminal_Customizer
                 treeNode.Text = profile.name;
             }
 
-            var foundScheme = settings.schemes.Where(s => s.name == profile.colorScheme);
-
-            if (foundScheme.Count() != 1)  // Add Scheme if not already present
+            if (!string.IsNullOrEmpty(profile.colorScheme))
             {
-                var scheme = schemes.Where(s => s.name == profile.colorScheme);
+                var foundScheme = settings.schemes.Where(s => s.name == profile.colorScheme);
 
-                settings.schemes.Add(scheme.First());
-                schemeNode.Nodes.Add(profile.colorScheme);
+                if (foundScheme.Count() != 1)  // Add Scheme if not already present
+                {
+                    var scheme = schemes.Where(s => s.name == profile.colorScheme);
+
+                    settings.schemes.Add(scheme.First());
+                    //schemeNode.Nodes.Add(profile.colorScheme);
+                    AddSchemeNode(schemeNode.Nodes, profile.colorScheme);
+                }
+
+                if (removeUnusedSchemes)
+                {
+                    RemoveUnusedSchemes();
+                }
+
+                QueueWriteToFile();
             }
+            
+        }
 
-            if ( removeUnusedSchemes )
+        public void AddSchemeNode(TreeNodeCollection nodes, string schemeName)
+        {
+            if (treeView1.InvokeRequired)
             {
-                RemoveUnusedSchemes();
+                var d = new SafeCallDelegate(AddSchemeNode);
+                treeView1.Invoke(d, new object[] { nodes, schemeName });
             }
-
-            QueueWriteToFile();
+            else
+            {
+                nodes.Add(schemeName);
+            }
         }
 
         public void schemeUpdated()
@@ -466,8 +494,21 @@ namespace Windows_Terminal_Customizer
 
                 if (nodeToRemove != null )
                 {
-                    schemeNode.Nodes.Remove(nodeToRemove);
+                    RemoveNode(schemeNode.Nodes, nodeToRemove);
                 }
+            }
+        }
+
+        public void RemoveNode(TreeNodeCollection nodes, TreeNode nodeToRemove)
+        {
+            if (treeView1.InvokeRequired)
+            {
+                var d = new SafeCallDelegateRemoveNode(RemoveNode);
+                treeView1.Invoke(d, new object[] { nodes, nodeToRemove });
+            }
+            else
+            {
+                nodes.Remove(nodeToRemove);
             }
         }
 
@@ -540,23 +581,20 @@ namespace Windows_Terminal_Customizer
             }
         }
 
-        public void SaveRotationInformation(string GUID, bool rotateImages, string folder, int rotateMinutes)
+        public void SaveRotationInformation(string GUID, bool rotateImages, bool rotateSchemes, string folder, int rotateMinutes)
         {
             CustomItem item;
-            CustomProfile cp;
-            
-            cp = LoadCustomProfile();
 
             item = GetCustomItemByGUID(GUID);
 
             if (item != null)
             {
                 item.rotateImages = rotateImages;
+                item.rotateSchemes = rotateSchemes;
                 item.rotationFolder = folder;
                 item.rotationMinutes = rotateMinutes;
 
-                SaveCustomProfile(cp);
-                myCustomProfile = LoadCustomProfile();
+                SaveCustomProfile(myCustomProfile);
             }
         }
 
@@ -595,6 +633,64 @@ namespace Windows_Terminal_Customizer
             return (cp);
         }
 
+        private void ReconcileCustomProfile()
+        {
+            CustomItem item;
+            bool madeChange = false;
+            List<CustomItem> deleteItems;
+
+            // Add profiles found in settings.profiles that are not in myCustomProfile
+
+            foreach (Profile profile in settings.profiles)
+            {
+                if ( GetCustomItemByGUID(profile.guid) == null )
+                {
+                    madeChange = true;
+                    item = NewDefaultCustomItem(profile.guid);
+                    myCustomProfile.items.Add(item);
+                }
+            }
+
+            // Remove items in myCustomProfile that are not in settings.profiles
+
+            deleteItems = new List<CustomItem>();
+
+            foreach(CustomItem ci in myCustomProfile.items)
+            {
+                if (GetProfileByGUID(ci.guid) == null)
+                {
+                    madeChange = true;
+                    deleteItems.Add(ci);
+                }
+            }
+
+            foreach(CustomItem di in deleteItems)
+            {
+                myCustomProfile.items.Remove(di);
+            }
+
+            if (madeChange)
+            {
+                SaveCustomProfile(myCustomProfile);
+            }
+        }
+
+        private CustomItem NewDefaultCustomItem(string guid)
+        {
+            CustomItem item;
+
+            item = new CustomItem();
+
+            item.guid = guid;
+            item.rotateImages = false;
+            item.rotateSchemes = false;
+            item.rotationMinutes = 15;
+            item.rotationFolder = string.Empty;
+
+            return (item);
+
+        }
+
         private void CreateDefaultCustomProfile(string fqp)
         {
             CustomItem item;
@@ -605,12 +701,7 @@ namespace Windows_Terminal_Customizer
 
             foreach(Profile profile in settings.profiles)
             {
-                item = new CustomItem();
-                item.guid = profile.guid;
-                item.rotateImages = false;
-                item.rotationMinutes = 15;
-                item.rotationFolder = string.Empty;
-
+                item = NewDefaultCustomItem(profile.guid);
                 cp.items.Add(item);
             }
 
@@ -629,37 +720,90 @@ namespace Windows_Terminal_Customizer
             return (path);
         }
 
-        public void CheckRotations(out string newImage)
+        public void CheckRotations(bool forceRotation)
         {
             int mod;
             Profile profile;
+            bool didRotation;
             string randomImage;
-
-            newImage = string.Empty;
+            string randomScheme;
 
             minutesRunning++;
 
             foreach(CustomItem item in myCustomProfile.items)
             {
-                mod = minutesRunning % item.rotationMinutes;
+                didRotation = false;
 
-                if ( mod == 0)
+                if ( item.rotationMinutes != null )
                 {
-                    randomImage = GetRandomImage(item.rotationFolder);
+                    mod = minutesRunning % (int)item.rotationMinutes;
 
-                    if ( !string.IsNullOrEmpty(randomImage) && File.Exists(randomImage))
+                    if (forceRotation || mod == 0)
                     {
                         profile = GetProfileByGUID(item.guid);
 
                         if (profile != null)
                         {
-                            profile.backgroundImage = randomImage;
-                            newImage = randomImage;
-                            profileUpdated(profile, null);
+
+                            if (item.rotateImages != null && item.rotateImages == true)
+                            {
+                                randomImage = GetRandomImage(item.rotationFolder);
+
+                                if (!string.IsNullOrEmpty(randomImage) && File.Exists(randomImage))
+                                {
+                                    profile.backgroundImage = randomImage;
+
+                                    if (currentDialog == Dialogs.Profile)
+                                    {
+                                        userControlProfile1.UpdateImageTextbox(randomImage, item.guid);
+                                    }
+
+                                    didRotation = true;
+                                }
+
+                            }
+
+                            if (item.rotateSchemes != null && item.rotateSchemes == true)
+                            {
+                                randomScheme = GetRandomSchemeName();
+
+                                profile.colorScheme = randomScheme;
+
+                                if (currentDialog == Dialogs.Profile)
+                                {
+                                    userControlProfile1.UpdateSchemeCombo(randomScheme, item.guid);
+                                }
+
+                                didRotation = true;
+                            }
+
+                            if (didRotation)
+                            {
+                                profileUpdated(profile, null);
+                            }
                         }
+
                     }
                 }
+                
             }
+        }
+
+        private string GetRandomSchemeName()
+        {
+            Random random;
+            int randomIndex;
+            string schemeName;
+
+            schemeName = string.Empty;
+
+            random = new Random();
+
+            randomIndex = random.Next(0, schemes.Count() - 1);
+
+            schemeName = schemes[randomIndex].name;
+
+            return (schemeName);
         }
 
         private CustomItem GetCustomItemByGUID(string GUID)
@@ -717,6 +861,63 @@ namespace Windows_Terminal_Customizer
 
             return (randomImage);
         }
+
+        private void nextToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            CheckRotations(true);
+        }
+
+        private void menuRotatePauseStart_Click(object sender, EventArgs e)
+        {
+            if (pauseRotations)
+            {
+                pauseRotations = false;
+                menuRotatePauseStart.Text = "Pause";
+                myTimer.Start();
+            }
+            else
+            {
+                pauseRotations = true;
+                menuRotatePauseStart.Text = "Continue";
+                myTimer.Stop();
+            }
+        }
+
+        public void ViewScheme(string schemeName)
+        {
+            int index;
+            TreeNode foundScheme;
+            TreeNode allSchemesNode;
+
+            index = 0;
+            foundScheme = null;
+            allSchemesNode = treeView1.Nodes[1];
+
+            while (foundScheme == null && index < allSchemesNode.Nodes.Count)
+            {
+                if (allSchemesNode.Nodes[index].Text == schemeName)
+                {
+                    foundScheme = allSchemesNode.Nodes[index];
+                }
+
+                index++;
+            }
+
+            if ( foundScheme != null )
+            {
+                treeView1.SelectedNode = foundScheme;
+            }
+        }
+
+        private void nextToolStripMenuItem_Click_1(object sender, EventArgs e)
+        {
+            CheckRotations(true);
+        }
+
+        private void menuNext_Click(object sender, EventArgs e)
+        {
+            CheckRotations(true);
+        }
     }
 
     public class Source
@@ -733,8 +934,9 @@ namespace Windows_Terminal_Customizer
     public class CustomItem
     {
         public string guid { get; set; }
-        public bool rotateImages { get; set; }
-        public int rotationMinutes { get; set; }
+        public bool? rotateImages { get; set; }
+        public int? rotationMinutes { get; set; }
         public string rotationFolder { get; set; }
+        public bool? rotateSchemes { get; set; }
     }
 }
