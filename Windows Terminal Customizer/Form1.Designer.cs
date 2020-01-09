@@ -199,12 +199,13 @@
             // 
             // splitContainer1.Panel2
             // 
-            this.splitContainer1.Panel2.Controls.Add(this.userControlSettings1);
-            this.splitContainer1.Panel2.Controls.Add(this.userControlHelp1);
-            this.splitContainer1.Panel2.Controls.Add(this.userControlKeyBinding1);
-            this.splitContainer1.Panel2.Controls.Add(this.userControlScheme1);
-            this.splitContainer1.Panel2.Controls.Add(this.userControlProfile1);
-            this.splitContainer1.Panel2.Controls.Add(this.userControlDefault1);
+            // JKH
+            //this.splitContainer1.Panel2.Controls.Add(this.userControlSettings1);
+            //this.splitContainer1.Panel2.Controls.Add(this.userControlHelp1);
+            //this.splitContainer1.Panel2.Controls.Add(this.userControlKeyBinding1);
+            //this.splitContainer1.Panel2.Controls.Add(this.userControlScheme1);
+            //this.splitContainer1.Panel2.Controls.Add(this.userControlProfile1);
+            //this.splitContainer1.Panel2.Controls.Add(this.userControlDefault1);
             this.splitContainer1.Size = new System.Drawing.Size(695, 890);
             this.splitContainer1.SplitterDistance = 200;
             this.splitContainer1.TabIndex = 2;

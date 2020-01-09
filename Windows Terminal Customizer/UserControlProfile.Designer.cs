@@ -34,7 +34,7 @@
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.textBoxName = new System.Windows.Forms.TextBox();
-            this.button1 = new System.Windows.Forms.Button();
+            this.buttonMakeDefault = new System.Windows.Forms.Button();
             this.comboBoxCommandLine = new System.Windows.Forms.ComboBox();
             this.comboBoxScheme = new System.Windows.Forms.ComboBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -62,10 +62,10 @@
             this.label2 = new System.Windows.Forms.Label();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.textBoxSource = new System.Windows.Forms.TextBox();
+            this.label12 = new System.Windows.Forms.Label();
             this.linkLabelScheme = new System.Windows.Forms.LinkLabel();
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
-            this.label12 = new System.Windows.Forms.Label();
-            this.textBoxSource = new System.Windows.Forms.TextBox();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarBackgroundOpacity)).BeginInit();
             this.tableLayoutPanel1.SuspendLayout();
@@ -88,6 +88,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxGUID.Location = new System.Drawing.Point(77, 19);
             this.textBoxGUID.Name = "textBoxGUID";
+            this.textBoxGUID.ReadOnly = true;
             this.textBoxGUID.Size = new System.Drawing.Size(333, 20);
             this.textBoxGUID.TabIndex = 1;
             // 
@@ -124,18 +125,20 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxName.Location = new System.Drawing.Point(77, 45);
             this.textBoxName.Name = "textBoxName";
+            this.textBoxName.ReadOnly = true;
             this.textBoxName.Size = new System.Drawing.Size(333, 20);
             this.textBoxName.TabIndex = 7;
             // 
-            // button1
+            // buttonMakeDefault
             // 
-            this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.button1.Location = new System.Drawing.Point(349, 13);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(100, 23);
-            this.button1.TabIndex = 8;
-            this.button1.Text = "Make Default";
-            this.button1.UseVisualStyleBackColor = true;
+            this.buttonMakeDefault.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonMakeDefault.Location = new System.Drawing.Point(349, 13);
+            this.buttonMakeDefault.Name = "buttonMakeDefault";
+            this.buttonMakeDefault.Size = new System.Drawing.Size(100, 23);
+            this.buttonMakeDefault.TabIndex = 8;
+            this.buttonMakeDefault.Text = "Make Default";
+            this.buttonMakeDefault.UseVisualStyleBackColor = true;
+            this.buttonMakeDefault.Click += new System.EventHandler(this.buttonMakeDefault_Click);
             // 
             // comboBoxCommandLine
             // 
@@ -444,6 +447,24 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "General";
             // 
+            // textBoxSource
+            // 
+            this.textBoxSource.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxSource.Location = new System.Drawing.Point(77, 71);
+            this.textBoxSource.Name = "textBoxSource";
+            this.textBoxSource.Size = new System.Drawing.Size(333, 20);
+            this.textBoxSource.TabIndex = 14;
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(23, 74);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(41, 13);
+            this.label12.TabIndex = 13;
+            this.label12.Text = "Source";
+            // 
             // linkLabelScheme
             // 
             this.linkLabelScheme.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -456,24 +477,6 @@
             this.linkLabelScheme.Text = "View Scheme";
             this.linkLabelScheme.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelScheme_LinkClicked);
             // 
-            // label12
-            // 
-            this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(23, 74);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(41, 13);
-            this.label12.TabIndex = 13;
-            this.label12.Text = "Source";
-            // 
-            // textBoxSource
-            // 
-            this.textBoxSource.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxSource.Location = new System.Drawing.Point(77, 71);
-            this.textBoxSource.Name = "textBoxSource";
-            this.textBoxSource.Size = new System.Drawing.Size(333, 20);
-            this.textBoxSource.TabIndex = 14;
-            // 
             // UserControlProfile
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -483,7 +486,7 @@
             this.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.buttonMakeDefault);
             this.Name = "UserControlProfile";
             this.Size = new System.Drawing.Size(483, 498);
             this.groupBox1.ResumeLayout(false);
@@ -505,7 +508,7 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox textBoxName;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button buttonMakeDefault;
         private System.Windows.Forms.ComboBox comboBoxCommandLine;
         private System.Windows.Forms.ComboBox comboBoxScheme;
         private System.Windows.Forms.GroupBox groupBox1;

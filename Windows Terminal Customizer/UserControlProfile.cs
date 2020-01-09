@@ -420,5 +420,10 @@ namespace Windows_Terminal_Customizer
         {
             _parent.ViewScheme(comboBoxScheme.SelectedItem.ToString());
         }
+
+        private void buttonMakeDefault_Click(object sender, EventArgs e)
+        {
+            _parent.MakeProfileDefault(textBoxGUID.Text);
+        }
     }
 }

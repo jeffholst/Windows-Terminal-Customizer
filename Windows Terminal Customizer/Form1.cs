@@ -43,6 +43,13 @@ namespace Windows_Terminal_Customizer
         public Form1()
         {
             InitializeComponent();
+            // These could also go in Forms2.Designer.cs
+            this.splitContainer1.Panel2.Controls.Add(this.userControlSettings1);
+            this.splitContainer1.Panel2.Controls.Add(this.userControlHelp1);
+            this.splitContainer1.Panel2.Controls.Add(this.userControlKeyBinding1);
+            this.splitContainer1.Panel2.Controls.Add(this.userControlScheme1);
+            this.splitContainer1.Panel2.Controls.Add(this.userControlProfile1);
+            this.splitContainer1.Panel2.Controls.Add(this.userControlDefault1);
             Setup();
         }
 
@@ -80,6 +87,7 @@ namespace Windows_Terminal_Customizer
             windowsTerminalEXE = ConfigurationManager.AppSettings["WindowsTerminalEXE"];
             removeUnusedSchemes = GetTrueOrFalseAppSetting("RemoveUnusedSchemes", true);
 
+            userControlDefault1.Setup(this);
             userControlSettings1.Setup(this, schemesFolder, windowsTerminalFolder, windowsTerminalEXE, removeUnusedSchemes);
             userControlProfile1.Setup(this);
             userControlScheme1.Setup(this);
@@ -201,6 +209,7 @@ namespace Windows_Terminal_Customizer
             toolStripStatusLabel1.Text = fileName;
 
             InitializeTree(settings);
+            userControlDefault1.RefreshDefaultProfileCombo(settings);
         }
 
         private void InitializeTree(Settings settings)
@@ -946,6 +955,11 @@ namespace Windows_Terminal_Customizer
             {
                 e.Effect = DragDropEffects.Move;
             }
+            else if (treeView1.SelectedNode.Equals(schemeNode))
+            {
+                // Special condition to see if we're trying to drag to last Profiles slot
+                e.Effect = DragDropEffects.Move;
+            }
             else
             {
                 e.Effect = DragDropEffects.None;
@@ -965,12 +979,20 @@ namespace Windows_Terminal_Customizer
 
             if (!draggedNode.Equals(targetNode))
             {
-                // If it is a move operation, remove the node from its current   
-                // location and add it to the node at the drop location.  
+                // Move is the only effect currently used
                 if (e.Effect == DragDropEffects.Move)
                 {
                     draggedNode.Remove();
-                    targetNode.Parent.Nodes.Insert(targetNode.Index, draggedNode);
+
+                    if (targetNode.Equals(schemeNode))
+                    {
+                        profileNode.Nodes.Add(draggedNode);
+                    }
+                    else
+                    {
+                        targetNode.Parent.Nodes.Insert(targetNode.Index, draggedNode);
+                    }
+
                     ReorderProfiles(draggedNode.Index, targetNode.Index);
                 }
             }
@@ -985,6 +1007,13 @@ namespace Windows_Terminal_Customizer
                 settings.profiles.Add((Profile)node.Tag);
             }
 
+            userControlDefault1.RefreshDefaultProfileCombo(settings);
+            QueueWriteToFile();
+        }
+
+        public void MakeProfileDefault(string newDefaultGuid)
+        {
+            settings.defaultProfile = newDefaultGuid;
             QueueWriteToFile();
         }
     }
