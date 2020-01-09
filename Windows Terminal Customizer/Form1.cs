@@ -205,13 +205,16 @@ namespace Windows_Terminal_Customizer
 
         private void InitializeTree(Settings settings)
         {
+            TreeNode newNode;
             profileNode = treeView1.Nodes[0].Nodes[1];    // Profiles
 
             profileNode.Nodes.Clear();
 
             foreach (Profile profile in settings.profiles)
             {
-                profileNode.Nodes.Add(profile.name);
+                newNode = new TreeNode(profile.name);
+                newNode.Tag = profile;
+                profileNode.Nodes.Add(newNode);
             }
 
             schemeNode = treeView1.Nodes[0].Nodes[2];    // Schemes
@@ -431,6 +434,7 @@ namespace Windows_Terminal_Customizer
                 writeToFile = true;
             }
         }
+
         private void WriteToFile(object sender, EventArgs e)
         {
             string json;
@@ -917,6 +921,71 @@ namespace Windows_Terminal_Customizer
         private void menuNext_Click(object sender, EventArgs e)
         {
             CheckRotations(true);
+        }
+
+        private void treeView1_ItemDrag(object sender, ItemDragEventArgs e)
+        {
+            TreeNode draggedNode = (TreeNode)e.Item;
+
+            if (draggedNode.Level == 2 && draggedNode.Parent == profileNode)
+            {
+
+                DoDragDrop(e.Item, DragDropEffects.Move);
+            }
+        }
+
+        private void treeView1_DragOver(object sender, DragEventArgs e)
+        {
+            // Retrieve the client coordinates of the mouse position.  
+            Point targetPoint = treeView1.PointToClient(new Point(e.X, e.Y));
+
+            // Select the node at the mouse position.  
+            treeView1.SelectedNode = treeView1.GetNodeAt(targetPoint);
+
+            if (treeView1.SelectedNode != null && treeView1.SelectedNode.Parent != null && treeView1.SelectedNode.Parent == profileNode)
+            {
+                e.Effect = DragDropEffects.Move;
+            }
+            else
+            {
+                e.Effect = DragDropEffects.None;
+            }
+        }
+
+        private void treeView1_DragDrop(object sender, DragEventArgs e)
+        {
+            // Retrieve the client coordinates of the drop location.  
+            Point targetPoint = treeView1.PointToClient(new Point(e.X, e.Y));
+
+            // Retrieve the node at the drop location.  
+            TreeNode targetNode = treeView1.GetNodeAt(targetPoint);
+
+            // Retrieve the node that was dragged.  
+            TreeNode draggedNode = (TreeNode)e.Data.GetData(typeof(TreeNode));
+
+            if (!draggedNode.Equals(targetNode))
+            {
+                // If it is a move operation, remove the node from its current   
+                // location and add it to the node at the drop location.  
+                if (e.Effect == DragDropEffects.Move)
+                {
+                    draggedNode.Remove();
+                    targetNode.Parent.Nodes.Insert(targetNode.Index, draggedNode);
+                    ReorderProfiles(draggedNode.Index, targetNode.Index);
+                }
+            }
+        }
+
+        private void ReorderProfiles(int index1, int index2)
+        {
+            settings.profiles.Clear();
+
+            foreach(TreeNode node in profileNode.Nodes)
+            {
+                settings.profiles.Add((Profile)node.Tag);
+            }
+
+            QueueWriteToFile();
         }
     }
 

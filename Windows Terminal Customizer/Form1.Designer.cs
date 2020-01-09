@@ -29,16 +29,16 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.TreeNode treeNode13 = new System.Windows.Forms.TreeNode("Global");
-            System.Windows.Forms.TreeNode treeNode14 = new System.Windows.Forms.TreeNode("Profiles");
-            System.Windows.Forms.TreeNode treeNode15 = new System.Windows.Forms.TreeNode("Schemes");
-            System.Windows.Forms.TreeNode treeNode16 = new System.Windows.Forms.TreeNode("KeyBindings");
-            System.Windows.Forms.TreeNode treeNode17 = new System.Windows.Forms.TreeNode("Settings", new System.Windows.Forms.TreeNode[] {
-            treeNode13,
-            treeNode14,
-            treeNode15,
-            treeNode16});
-            System.Windows.Forms.TreeNode treeNode18 = new System.Windows.Forms.TreeNode("All Schemes");
+            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Global");
+            System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Profiles");
+            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Schemes");
+            System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("KeyBindings");
+            System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("Settings", new System.Windows.Forms.TreeNode[] {
+            treeNode1,
+            treeNode2,
+            treeNode3,
+            treeNode4});
+            System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("All Schemes");
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.menuFile = new System.Windows.Forms.ToolStripMenuItem();
             this.menuFileOpen = new System.Windows.Forms.ToolStripMenuItem();
@@ -55,17 +55,17 @@
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.treeView1 = new System.Windows.Forms.TreeView();
+            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.contextMenuStripAllSchemes = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.deleteToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.userControlSettings1 = new Windows_Terminal_Customizer.UserControlSettings();
             this.userControlHelp1 = new Windows_Terminal_Customizer.UserControlHelp();
             this.userControlKeyBinding1 = new Windows_Terminal_Customizer.UserControlKeyBinding();
             this.userControlScheme1 = new Windows_Terminal_Customizer.UserControlScheme();
             this.userControlProfile1 = new Windows_Terminal_Customizer.UserControlProfile();
             this.userControlDefault1 = new Windows_Terminal_Customizer.UserControlDefault();
-            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
-            this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.contextMenuStripAllSchemes = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.deleteToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -162,7 +162,7 @@
             // menuRotatePauseStart
             // 
             this.menuRotatePauseStart.Name = "menuRotatePauseStart";
-            this.menuRotatePauseStart.Size = new System.Drawing.Size(180, 22);
+            this.menuRotatePauseStart.Size = new System.Drawing.Size(210, 22);
             this.menuRotatePauseStart.Text = "Pause";
             this.menuRotatePauseStart.Click += new System.EventHandler(this.menuRotatePauseStart_Click);
             // 
@@ -211,28 +211,59 @@
             // 
             // treeView1
             // 
+            this.treeView1.AllowDrop = true;
             this.treeView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.treeView1.Location = new System.Drawing.Point(0, 0);
             this.treeView1.Name = "treeView1";
-            treeNode13.Name = "Node0";
-            treeNode13.Text = "Global";
-            treeNode14.Name = "Node1";
-            treeNode14.Text = "Profiles";
-            treeNode15.Name = "Node2";
-            treeNode15.Text = "Schemes";
-            treeNode16.Name = "Node3";
-            treeNode16.Text = "KeyBindings";
-            treeNode17.Name = "Node0";
-            treeNode17.Text = "Settings";
-            treeNode18.Name = "Node1";
-            treeNode18.Text = "All Schemes";
+            treeNode1.Name = "Node0";
+            treeNode1.Text = "Global";
+            treeNode2.Name = "Node1";
+            treeNode2.Text = "Profiles";
+            treeNode3.Name = "Node2";
+            treeNode3.Text = "Schemes";
+            treeNode4.Name = "Node3";
+            treeNode4.Text = "KeyBindings";
+            treeNode5.Name = "Node0";
+            treeNode5.Text = "Settings";
+            treeNode6.Name = "Node1";
+            treeNode6.Text = "All Schemes";
             this.treeView1.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode17,
-            treeNode18});
+            treeNode5,
+            treeNode6});
             this.treeView1.Size = new System.Drawing.Size(200, 890);
             this.treeView1.TabIndex = 0;
+            this.treeView1.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.treeView1_ItemDrag);
             this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
             this.treeView1.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeView1_NodeMouseClick);
+            this.treeView1.DragDrop += new System.Windows.Forms.DragEventHandler(this.treeView1_DragDrop);
+            this.treeView1.DragOver += new System.Windows.Forms.DragEventHandler(this.treeView1_DragOver);
+            // 
+            // openFileDialog1
+            // 
+            this.openFileDialog1.FileName = "openFileDialog1";
+            this.openFileDialog1.Filter = "JSON files|*.json|All files|*.*";
+            this.openFileDialog1.FileOk += new System.ComponentModel.CancelEventHandler(this.openFileDialog1_FileOk);
+            // 
+            // contextMenuStripAllSchemes
+            // 
+            this.contextMenuStripAllSchemes.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.deleteToolStripMenuItem,
+            this.deleteToolStripMenuItem1});
+            this.contextMenuStripAllSchemes.Name = "contextMenuStrip1";
+            this.contextMenuStripAllSchemes.Size = new System.Drawing.Size(108, 48);
+            // 
+            // deleteToolStripMenuItem
+            // 
+            this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
+            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
+            this.deleteToolStripMenuItem.Text = "Add";
+            // 
+            // deleteToolStripMenuItem1
+            // 
+            this.deleteToolStripMenuItem1.Name = "deleteToolStripMenuItem1";
+            this.deleteToolStripMenuItem1.Size = new System.Drawing.Size(107, 22);
+            this.deleteToolStripMenuItem1.Text = "Delete";
+            this.deleteToolStripMenuItem1.Click += new System.EventHandler(this.deleteToolStripMenuItem1_Click);
             // 
             // userControlSettings1
             // 
@@ -276,7 +307,7 @@
             this.userControlProfile1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.userControlProfile1.Location = new System.Drawing.Point(193, 12);
             this.userControlProfile1.Name = "userControlProfile1";
-            this.userControlProfile1.Size = new System.Drawing.Size(290, 465);
+            this.userControlProfile1.Size = new System.Drawing.Size(290, 490);
             this.userControlProfile1.TabIndex = 1;
             // 
             // userControlDefault1
@@ -286,33 +317,6 @@
             this.userControlDefault1.Name = "userControlDefault1";
             this.userControlDefault1.Size = new System.Drawing.Size(107, 85);
             this.userControlDefault1.TabIndex = 0;
-            // 
-            // openFileDialog1
-            // 
-            this.openFileDialog1.FileName = "openFileDialog1";
-            this.openFileDialog1.Filter = "JSON files|*.json|All files|*.*";
-            this.openFileDialog1.FileOk += new System.ComponentModel.CancelEventHandler(this.openFileDialog1_FileOk);
-            // 
-            // contextMenuStripAllSchemes
-            // 
-            this.contextMenuStripAllSchemes.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.deleteToolStripMenuItem,
-            this.deleteToolStripMenuItem1});
-            this.contextMenuStripAllSchemes.Name = "contextMenuStrip1";
-            this.contextMenuStripAllSchemes.Size = new System.Drawing.Size(108, 48);
-            // 
-            // deleteToolStripMenuItem
-            // 
-            this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
-            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
-            this.deleteToolStripMenuItem.Text = "Add";
-            // 
-            // deleteToolStripMenuItem1
-            // 
-            this.deleteToolStripMenuItem1.Name = "deleteToolStripMenuItem1";
-            this.deleteToolStripMenuItem1.Size = new System.Drawing.Size(107, 22);
-            this.deleteToolStripMenuItem1.Text = "Delete";
-            this.deleteToolStripMenuItem1.Click += new System.EventHandler(this.deleteToolStripMenuItem1_Click);
             // 
             // Form1
             // 
