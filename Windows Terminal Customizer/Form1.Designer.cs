@@ -29,16 +29,16 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Global");
-            System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Profiles");
-            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Schemes");
-            System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("KeyBindings");
-            System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("Settings", new System.Windows.Forms.TreeNode[] {
-            treeNode1,
-            treeNode2,
-            treeNode3,
-            treeNode4});
-            System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("All Schemes");
+            System.Windows.Forms.TreeNode treeNode7 = new System.Windows.Forms.TreeNode("Global");
+            System.Windows.Forms.TreeNode treeNode8 = new System.Windows.Forms.TreeNode("Profiles");
+            System.Windows.Forms.TreeNode treeNode9 = new System.Windows.Forms.TreeNode("Schemes");
+            System.Windows.Forms.TreeNode treeNode10 = new System.Windows.Forms.TreeNode("KeyBindings");
+            System.Windows.Forms.TreeNode treeNode11 = new System.Windows.Forms.TreeNode("Settings", new System.Windows.Forms.TreeNode[] {
+            treeNode7,
+            treeNode8,
+            treeNode9,
+            treeNode10});
+            System.Windows.Forms.TreeNode treeNode12 = new System.Windows.Forms.TreeNode("All Schemes");
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.menuFile = new System.Windows.Forms.ToolStripMenuItem();
             this.menuFileOpen = new System.Windows.Forms.ToolStripMenuItem();
@@ -57,22 +57,32 @@
             this.treeView1 = new System.Windows.Forms.TreeView();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.contextMenuStripAllSchemes = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.deleteToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.contextMenuProfilesNode = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.profileAdd = new System.Windows.Forms.ToolStripMenuItem();
+            this.contextMenuProfilesChildNode = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.profileCopy = new System.Windows.Forms.ToolStripMenuItem();
+            this.profileDelete = new System.Windows.Forms.ToolStripMenuItem();
+            this.contextMenuAllSchemesAdd = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.addToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.contextMenuAllSchemesChildNode = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.allSchemeseCopy = new System.Windows.Forms.ToolStripMenuItem();
+            this.allSchemesDelete = new System.Windows.Forms.ToolStripMenuItem();
             this.userControlSettings1 = new Windows_Terminal_Customizer.UserControlSettings();
             this.userControlHelp1 = new Windows_Terminal_Customizer.UserControlHelp();
             this.userControlKeyBinding1 = new Windows_Terminal_Customizer.UserControlKeyBinding();
             this.userControlScheme1 = new Windows_Terminal_Customizer.UserControlScheme();
-            this.userControlProfile1 = new Windows_Terminal_Customizer.UserControlProfile();
             this.userControlDefault1 = new Windows_Terminal_Customizer.UserControlDefault();
+            this.userControlProfile1 = new Windows_Terminal_Customizer.UserControlProfile();
+            this.newSchemeDialog = new System.Windows.Forms.SaveFileDialog();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
-            this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
-            this.contextMenuStripAllSchemes.SuspendLayout();
+            this.contextMenuProfilesNode.SuspendLayout();
+            this.contextMenuProfilesChildNode.SuspendLayout();
+            this.contextMenuAllSchemesAdd.SuspendLayout();
+            this.contextMenuAllSchemesChildNode.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -196,16 +206,6 @@
             // splitContainer1.Panel1
             // 
             this.splitContainer1.Panel1.Controls.Add(this.treeView1);
-            // 
-            // splitContainer1.Panel2
-            // 
-            // JKH
-            //this.splitContainer1.Panel2.Controls.Add(this.userControlSettings1);
-            //this.splitContainer1.Panel2.Controls.Add(this.userControlHelp1);
-            //this.splitContainer1.Panel2.Controls.Add(this.userControlKeyBinding1);
-            //this.splitContainer1.Panel2.Controls.Add(this.userControlScheme1);
-            //this.splitContainer1.Panel2.Controls.Add(this.userControlProfile1);
-            //this.splitContainer1.Panel2.Controls.Add(this.userControlDefault1);
             this.splitContainer1.Size = new System.Drawing.Size(695, 890);
             this.splitContainer1.SplitterDistance = 200;
             this.splitContainer1.TabIndex = 2;
@@ -216,21 +216,21 @@
             this.treeView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.treeView1.Location = new System.Drawing.Point(0, 0);
             this.treeView1.Name = "treeView1";
-            treeNode1.Name = "Node0";
-            treeNode1.Text = "Global";
-            treeNode2.Name = "Node1";
-            treeNode2.Text = "Profiles";
-            treeNode3.Name = "Node2";
-            treeNode3.Text = "Schemes";
-            treeNode4.Name = "Node3";
-            treeNode4.Text = "KeyBindings";
-            treeNode5.Name = "Node0";
-            treeNode5.Text = "Settings";
-            treeNode6.Name = "Node1";
-            treeNode6.Text = "All Schemes";
+            treeNode7.Name = "Node0";
+            treeNode7.Text = "Global";
+            treeNode8.Name = "Node1";
+            treeNode8.Text = "Profiles";
+            treeNode9.Name = "Node2";
+            treeNode9.Text = "Schemes";
+            treeNode10.Name = "Node3";
+            treeNode10.Text = "KeyBindings";
+            treeNode11.Name = "Node0";
+            treeNode11.Text = "Settings";
+            treeNode12.Name = "Node1";
+            treeNode12.Text = "All Schemes";
             this.treeView1.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode5,
-            treeNode6});
+            treeNode11,
+            treeNode12});
             this.treeView1.Size = new System.Drawing.Size(200, 890);
             this.treeView1.TabIndex = 0;
             this.treeView1.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.treeView1_ItemDrag);
@@ -245,26 +245,78 @@
             this.openFileDialog1.Filter = "JSON files|*.json|All files|*.*";
             this.openFileDialog1.FileOk += new System.ComponentModel.CancelEventHandler(this.openFileDialog1_FileOk);
             // 
-            // contextMenuStripAllSchemes
+            // contextMenuProfilesNode
             // 
-            this.contextMenuStripAllSchemes.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.deleteToolStripMenuItem,
-            this.deleteToolStripMenuItem1});
-            this.contextMenuStripAllSchemes.Name = "contextMenuStrip1";
-            this.contextMenuStripAllSchemes.Size = new System.Drawing.Size(108, 48);
+            this.contextMenuProfilesNode.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.profileAdd});
+            this.contextMenuProfilesNode.Name = "contextMenuStrip1";
+            this.contextMenuProfilesNode.Size = new System.Drawing.Size(97, 26);
             // 
-            // deleteToolStripMenuItem
+            // profileAdd
             // 
-            this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
-            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
-            this.deleteToolStripMenuItem.Text = "Add";
+            this.profileAdd.Name = "profileAdd";
+            this.profileAdd.Size = new System.Drawing.Size(96, 22);
+            this.profileAdd.Text = "Add";
+            this.profileAdd.Click += new System.EventHandler(this.profileAdd_Click);
             // 
-            // deleteToolStripMenuItem1
+            // contextMenuProfilesChildNode
             // 
-            this.deleteToolStripMenuItem1.Name = "deleteToolStripMenuItem1";
-            this.deleteToolStripMenuItem1.Size = new System.Drawing.Size(107, 22);
-            this.deleteToolStripMenuItem1.Text = "Delete";
-            this.deleteToolStripMenuItem1.Click += new System.EventHandler(this.deleteToolStripMenuItem1_Click);
+            this.contextMenuProfilesChildNode.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.profileCopy,
+            this.profileDelete});
+            this.contextMenuProfilesChildNode.Name = "contextMenuProfilesChildNode";
+            this.contextMenuProfilesChildNode.Size = new System.Drawing.Size(108, 48);
+            // 
+            // profileCopy
+            // 
+            this.profileCopy.Name = "profileCopy";
+            this.profileCopy.Size = new System.Drawing.Size(107, 22);
+            this.profileCopy.Text = "Copy";
+            this.profileCopy.Click += new System.EventHandler(this.profileCopy_Click);
+            // 
+            // profileDelete
+            // 
+            this.profileDelete.Name = "profileDelete";
+            this.profileDelete.Size = new System.Drawing.Size(107, 22);
+            this.profileDelete.Text = "Delete";
+            this.profileDelete.Click += new System.EventHandler(this.profileDelete_Click);
+            // 
+            // contextMenuAllSchemesAdd
+            // 
+            this.contextMenuAllSchemesAdd.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.addToolStripMenuItem});
+            this.contextMenuAllSchemesAdd.Name = "contextMenuAllSchemesNode";
+            this.contextMenuAllSchemesAdd.Size = new System.Drawing.Size(97, 26);
+            this.contextMenuAllSchemesAdd.Click += new System.EventHandler(this.allSchemesAdd_Click);
+            // 
+            // addToolStripMenuItem
+            // 
+            this.addToolStripMenuItem.Name = "addToolStripMenuItem";
+            this.addToolStripMenuItem.Size = new System.Drawing.Size(96, 22);
+            this.addToolStripMenuItem.Text = "Add";
+            this.addToolStripMenuItem.Click += new System.EventHandler(this.addToolStripMenuItem_Click);
+            // 
+            // contextMenuAllSchemesChildNode
+            // 
+            this.contextMenuAllSchemesChildNode.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.allSchemeseCopy,
+            this.allSchemesDelete});
+            this.contextMenuAllSchemesChildNode.Name = "contextMenuAllSchemesChildNode";
+            this.contextMenuAllSchemesChildNode.Size = new System.Drawing.Size(108, 48);
+            // 
+            // allSchemeseCopy
+            // 
+            this.allSchemeseCopy.Name = "allSchemeseCopy";
+            this.allSchemeseCopy.Size = new System.Drawing.Size(107, 22);
+            this.allSchemeseCopy.Text = "Copy";
+            this.allSchemeseCopy.Click += new System.EventHandler(this.allSchemeseCopy_Click);
+            // 
+            // allSchemesDelete
+            // 
+            this.allSchemesDelete.Name = "allSchemesDelete";
+            this.allSchemesDelete.Size = new System.Drawing.Size(107, 22);
+            this.allSchemesDelete.Text = "Delete";
+            this.allSchemesDelete.Click += new System.EventHandler(this.allSchemesDelete_Click);
             // 
             // userControlSettings1
             // 
@@ -301,16 +353,6 @@
             this.userControlScheme1.Size = new System.Drawing.Size(486, 817);
             this.userControlScheme1.TabIndex = 2;
             // 
-            // userControlProfile1
-            // 
-            this.userControlProfile1.AutoScroll = true;
-            this.userControlProfile1.AutoSize = true;
-            this.userControlProfile1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.userControlProfile1.Location = new System.Drawing.Point(193, 12);
-            this.userControlProfile1.Name = "userControlProfile1";
-            this.userControlProfile1.Size = new System.Drawing.Size(290, 490);
-            this.userControlProfile1.TabIndex = 1;
-            // 
             // userControlDefault1
             // 
             this.userControlDefault1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
@@ -318,6 +360,21 @@
             this.userControlDefault1.Name = "userControlDefault1";
             this.userControlDefault1.Size = new System.Drawing.Size(107, 85);
             this.userControlDefault1.TabIndex = 0;
+            // 
+            // userControlProfile1
+            // 
+            this.userControlProfile1.AutoScroll = true;
+            this.userControlProfile1.AutoSize = true;
+            this.userControlProfile1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.userControlProfile1.Location = new System.Drawing.Point(0, 0);
+            this.userControlProfile1.Name = "userControlProfile1";
+            this.userControlProfile1.Size = new System.Drawing.Size(483, 498);
+            this.userControlProfile1.TabIndex = 0;
+            // 
+            // newSchemeDialog
+            // 
+            this.newSchemeDialog.Filter = "JSON Files|*.json";
+            this.newSchemeDialog.FileOk += new System.ComponentModel.CancelEventHandler(this.newSchemeDialog_FileOk);
             // 
             // Form1
             // 
@@ -335,11 +392,12 @@
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
             this.splitContainer1.Panel1.ResumeLayout(false);
-            this.splitContainer1.Panel2.ResumeLayout(false);
-            this.splitContainer1.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
-            this.contextMenuStripAllSchemes.ResumeLayout(false);
+            this.contextMenuProfilesNode.ResumeLayout(false);
+            this.contextMenuProfilesChildNode.ResumeLayout(false);
+            this.contextMenuAllSchemesAdd.ResumeLayout(false);
+            this.contextMenuAllSchemesChildNode.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -366,14 +424,22 @@
         private System.Windows.Forms.ToolStripMenuItem menuSettings;
         private System.Windows.Forms.ToolStripMenuItem menuLaunch;
         private System.Windows.Forms.Timer timer1;
-        private System.Windows.Forms.ContextMenuStrip contextMenuStripAllSchemes;
-        private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem1;
+        private System.Windows.Forms.ContextMenuStrip contextMenuProfilesNode;
+        private System.Windows.Forms.ToolStripMenuItem profileAdd;
         private System.Windows.Forms.ToolStripMenuItem menuSchedule;
         private System.Windows.Forms.ToolStripMenuItem nextToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem menuRotatePauseStart;
         private System.Windows.Forms.ToolStripMenuItem menuNext;
         private System.Windows.Forms.ToolStripMenuItem previousToolStripMenuItem;
+        private System.Windows.Forms.ContextMenuStrip contextMenuProfilesChildNode;
+        private System.Windows.Forms.ToolStripMenuItem profileCopy;
+        private System.Windows.Forms.ToolStripMenuItem profileDelete;
+        private System.Windows.Forms.ContextMenuStrip contextMenuAllSchemesAdd;
+        private System.Windows.Forms.ToolStripMenuItem addToolStripMenuItem;
+        private System.Windows.Forms.ContextMenuStrip contextMenuAllSchemesChildNode;
+        private System.Windows.Forms.ToolStripMenuItem allSchemeseCopy;
+        private System.Windows.Forms.ToolStripMenuItem allSchemesDelete;
+        private System.Windows.Forms.SaveFileDialog newSchemeDialog;
     }
 }
 

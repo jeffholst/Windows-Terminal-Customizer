@@ -125,9 +125,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxName.Location = new System.Drawing.Point(77, 45);
             this.textBoxName.Name = "textBoxName";
-            this.textBoxName.ReadOnly = true;
             this.textBoxName.Size = new System.Drawing.Size(333, 20);
             this.textBoxName.TabIndex = 7;
+            this.textBoxName.Leave += new System.EventHandler(this.textBoxName_Leave);
             // 
             // buttonMakeDefault
             // 
@@ -149,6 +149,7 @@
             this.comboBoxCommandLine.Name = "comboBoxCommandLine";
             this.comboBoxCommandLine.Size = new System.Drawing.Size(333, 21);
             this.comboBoxCommandLine.TabIndex = 9;
+            this.comboBoxCommandLine.SelectedValueChanged += new System.EventHandler(this.comboBoxCommandLine_SelectedValueChanged);
             // 
             // comboBoxScheme
             // 

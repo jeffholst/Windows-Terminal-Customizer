@@ -119,6 +119,11 @@ namespace Windows_Terminal_Customizer
             {
                 comboBoxCommandLine.SelectedValue = profile.commandLine;
             }
+            else
+            {
+                comboBoxCommandLine.SelectedIndex = 0;
+                profile.commandLine = comboBoxCommandLine.SelectedValue.ToString();
+            }
 
             if ( !string.IsNullOrEmpty(profile.colorScheme) )
             {
@@ -135,7 +140,8 @@ namespace Windows_Terminal_Customizer
             else
             {
                 // No scheme selected
-                comboBoxScheme.SelectedItem = null;
+                comboBoxScheme.SelectedIndex = 0;
+                profile.colorScheme = comboBoxScheme.SelectedItem.ToString();
             }
 
             if (!string.IsNullOrEmpty(profile.backgroundImage))
@@ -330,7 +336,8 @@ namespace Windows_Terminal_Customizer
         {
             if (FormIsValid())
             {
-                profile.backgroundImageStretchMode = comboBoxBackgroundImageStretchMode.SelectedValue.ToString();
+                // JKH
+                //profile.backgroundImageStretchMode = comboBoxBackgroundImageStretchMode.SelectedValue.ToString();
 
                 ProfileUpdated();
             }
@@ -424,6 +431,24 @@ namespace Windows_Terminal_Customizer
         private void buttonMakeDefault_Click(object sender, EventArgs e)
         {
             _parent.MakeProfileDefault(textBoxGUID.Text);
+        }
+
+        private void comboBoxCommandLine_SelectedValueChanged(object sender, EventArgs e)
+        {
+            if (!populating)
+            {
+                profile.commandLine = comboBoxCommandLine.SelectedValue.ToString();
+                ProfileUpdated();
+            }
+        }
+
+        private void textBoxName_Leave(object sender, EventArgs e)
+        {
+            if (!populating)
+            {
+                profile.name = textBoxName.Text;
+                ProfileUpdated();
+            }
         }
     }
 }

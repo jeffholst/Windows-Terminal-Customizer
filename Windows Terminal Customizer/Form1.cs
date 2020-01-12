@@ -22,13 +22,14 @@ namespace Windows_Terminal_Customizer
         private string fileName;                // name of profile file
         private Dialogs currentDialog;          // current dialog being displayed
         private string schemesFolder;           // folder containing schemes JSON files 
-        private List<Scheme> schemes;           // available schemes found in schemesFolder
+        //private List<Scheme> schemes;           // available schemes found in schemesFolder
         private string windowsTerminalFolder;   // location of Windows Terminal EXE
         private string windowsTerminalEXE;      // windows terminal exe read from config file
         private string windowsTerminalFQP;      // fully qualified path of windows terminal
         private TreeNode profileNode;           // profile parent node
         private TreeNode schemeNode;            // scheme parent node
         private TreeNode keyBindNode;           // keybind parent node
+        private TreeNode allSchemesNode;        // all schemese parent node
         private bool removeUnusedSchemes;       // remove unused schemes from JSON file
         private bool writeToFile = false;       // write to file on next timer interval
         private Timer writeToFileTimer;         // timer used to write to file
@@ -243,6 +244,8 @@ namespace Windows_Terminal_Customizer
             {
                 keyBindNode.Nodes.Add(keyBinding.command);
             }
+
+            allSchemesNode = treeView1.Nodes[1];
         }
 
         private void TreeViewNodeClicked()
@@ -253,6 +256,8 @@ namespace Windows_Terminal_Customizer
 
             if (treeView1.SelectedNode != null)
             {
+                SetContextMenu(treeView1.SelectedNode);
+
                 if (treeView1.SelectedNode.Level == 1 && treeView1.SelectedNode.Parent.Index == 0)
                 {
                     SetCurrentDialog(Dialogs.Global);
@@ -275,18 +280,35 @@ namespace Windows_Terminal_Customizer
                             break;
                     }
                 }
-                else if (treeView1.SelectedNode.Level == 0 && treeView1.SelectedNode.Index == 1)
-                {
-                    contextMenuStripAllSchemes.Items[1].Enabled = false;
-                    treeView1.ContextMenuStrip = contextMenuStripAllSchemes;
-                }
                 else if (treeView1.SelectedNode.Level == 1 && treeView1.SelectedNode.Parent.Index == 1)
                 {
-                    contextMenuStripAllSchemes.Items[1].Enabled = true;
-                    treeView1.ContextMenuStrip = contextMenuStripAllSchemes;
-
                     SetCurrentDialog(Dialogs.Scheme);
                     userControlScheme1.Populate(schemes[treeView1.SelectedNode.Index], null);
+                }
+            }
+        }
+
+        private void SetContextMenu(TreeNode selectedNode)
+        {
+            treeView1.ContextMenu = null;
+
+            if (selectedNode.Equals(profileNode))
+            {
+                treeView1.ContextMenuStrip = contextMenuProfilesNode;
+            }
+            else if (selectedNode.Equals(allSchemesNode))
+            {
+                treeView1.ContextMenuStrip = contextMenuAllSchemesAdd;
+            }
+            else if (selectedNode.Parent != null )
+            {
+                if (selectedNode.Parent.Equals(profileNode))
+                {
+                    treeView1.ContextMenuStrip = contextMenuProfilesChildNode;
+                }
+                else if (selectedNode.Parent.Equals(allSchemesNode))
+                {
+                    treeView1.ContextMenuStrip = contextMenuAllSchemesChildNode;
                 }
             }
         }
@@ -302,6 +324,7 @@ namespace Windows_Terminal_Customizer
         }
 
         public void schemesFolderSelected(string folder)
+
         {
             Scheme myScheme;
             TreeNode allSchemes;
@@ -310,7 +333,9 @@ namespace Windows_Terminal_Customizer
 
             if (!string.IsNullOrEmpty(folder) && Directory.Exists(folder))
             {
+                schemesFolder = folder;
                 allSchemes = treeView1.Nodes[1];
+                allSchemes.Nodes.Clear();
 
                 Configuration config = ConfigurationManager.OpenExeConfiguration(Application.ExecutablePath);
 
@@ -404,7 +429,6 @@ namespace Windows_Terminal_Customizer
                     var scheme = schemes.Where(s => s.name == profile.colorScheme);
 
                     settings.schemes.Add(scheme.First());
-                    //schemeNode.Nodes.Add(profile.colorScheme);
                     AddSchemeNode(schemeNode.Nodes, profile.colorScheme);
                 }
 
@@ -538,7 +562,10 @@ namespace Windows_Terminal_Customizer
             }
 
             userControlProfile1.UpdateSchemes(schemes);
-            schemeNode.Nodes.Add(scheme.name);
+            //schemeNode.Nodes.Add(scheme.name);
+            allSchemesNode.Nodes.Add(scheme.name);
+            treeView1.TreeViewNodeSorter = new NodeSorter(allSchemesNode);
+            treeView1.Sort();
         }
 
         public string GetSchemesFolder
@@ -570,29 +597,29 @@ namespace Windows_Terminal_Customizer
             return (foundScheme);
         }
 
-        private void deleteToolStripMenuItem1_Click(object sender, EventArgs e)
-        {
-            string msg;
-            string fileName;
-            Scheme schemeToDelete;
+        //private void deleteToolStripMenuItem1_Click(object sender, EventArgs e)
+        //{
+        //    string msg;
+        //    string fileName;
+        //    Scheme schemeToDelete;
 
-            msg = string.Format("Really delete '{0}'?", treeView1.SelectedNode.Text);
+        //    msg = string.Format("Really delete '{0}'?", treeView1.SelectedNode.Text);
 
-            var confirmDelete = MessageBox.Show(msg, "Delete Scheme?", MessageBoxButtons.YesNo);
+        //    var confirmDelete = MessageBox.Show(msg, "Delete Scheme?", MessageBoxButtons.YesNo);
 
-            if (confirmDelete == DialogResult.Yes)
-            {
-                fileName = Path.Combine(GetSchemesFolder, string.Format("{0}.json", treeView1.SelectedNode.Text));
-                File.Delete(fileName);
-                schemeToDelete = FindScheme(treeView1.SelectedNode.Text);
-                if (schemeToDelete != null )
-                {
-                    schemes.Remove(schemeToDelete);
-                }
+        //    if (confirmDelete == DialogResult.Yes)
+        //    {
+        //        fileName = Path.Combine(GetSchemesFolder, string.Format("{0}.json", treeView1.SelectedNode.Text));
+        //        File.Delete(fileName);
+        //        schemeToDelete = FindScheme(treeView1.SelectedNode.Text);
+        //        if (schemeToDelete != null )
+        //        {
+        //            schemes.Remove(schemeToDelete);
+        //        }
 
-                treeView1.SelectedNode.Remove();
-            }
-        }
+        //        treeView1.SelectedNode.Remove();
+        //    }
+        //}
 
         public void SaveRotationInformation(string GUID, bool rotateImages, bool rotateSchemes, string folder, int rotateMinutes)
         {
@@ -1015,6 +1042,131 @@ namespace Windows_Terminal_Customizer
         {
             settings.defaultProfile = newDefaultGuid;
             QueueWriteToFile();
+        }
+
+        private void profileAdd_Click(object sender, EventArgs e)
+        {
+            Profile newProfile;
+
+            newProfile = new Profile();
+
+            InsertNewProfileNode(newProfile, "New Profile");
+        }
+
+        private void profileCopy_Click(object sender, EventArgs e)
+        {
+            Profile newProfile;
+
+            newProfile = (Profile)((Profile)(treeView1.SelectedNode.Tag)).ShallowCopy();
+
+            InsertNewProfileNode(newProfile, string.Format("Copy - {0}", newProfile.name));
+        }
+
+        private void InsertNewProfileNode(Profile newProfile, string newProfileName)
+        {
+            TreeNode newNode;
+            CustomItem customItem;
+
+            newProfile.name = newProfileName;
+            newProfile.guid = string.Format("{{{0}}}", System.Guid.NewGuid());
+            newNode = new TreeNode(newProfile.name);
+            newNode.Tag = newProfile;
+            profileNode.Nodes.Add(newNode);
+
+            customItem = NewDefaultCustomItem(newProfile.guid);
+            myCustomProfile.items.Add(customItem);
+
+            SaveCustomProfile(myCustomProfile);
+
+            settings.profiles.Add(newProfile);
+            QueueWriteToFile();
+
+            treeView1.SelectedNode = newNode;
+        }
+
+        private void profileDelete_Click(object sender, EventArgs e)
+        {
+            string msg;
+            Profile profileToDelete;
+
+            msg = string.Format("Really delete '{0}'?", treeView1.SelectedNode.Text);
+
+            var confirmDelete = MessageBox.Show(msg, "Delete Profile?", MessageBoxButtons.YesNo);
+
+            if (confirmDelete == DialogResult.Yes)
+            {
+                profileToDelete = (Profile)(treeView1.SelectedNode.Tag);
+
+                settings.profiles.Remove(profileToDelete);
+
+                treeView1.SelectedNode.Remove();
+
+                QueueWriteToFile();
+                ReconcileCustomProfile();
+            }
+        }
+
+        private void allSchemesAdd_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void allSchemeseCopy_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void allSchemesDelete_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void addToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            newSchemeDialog.InitialDirectory = GetSchemesFolder;
+            newSchemeDialog.FileName = string.Empty;
+            newSchemeDialog.ShowDialog();
+        }
+
+        private void newSchemeDialog_FileOk(object sender, CancelEventArgs e)
+        {
+            string json;
+            Scheme newScheme;
+
+            newScheme = new Scheme();
+            newScheme.name = Path.GetFileNameWithoutExtension(newSchemeDialog.FileName);
+
+            json = JsonConvert.SerializeObject(newScheme,
+                Formatting.Indented,
+                new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+
+            File.WriteAllText(newSchemeDialog.FileName, json);
+
+            addSchemeFile(newSchemeDialog.FileName);
+        }
+    }
+
+    public class NodeSorter : System.Collections.IComparer
+    {
+        TreeNode allSchemesNode;
+
+        public NodeSorter(TreeNode allSchemesNode) 
+        {
+            this.allSchemesNode = allSchemesNode;
+        }
+
+        public int Compare(object x, object y)
+        {
+
+            TreeNode tx = x as TreeNode;
+            TreeNode ty = y as TreeNode;
+            
+            if (tx.Parent != null && ty.Parent != null && tx.Parent.Equals(allSchemesNode))
+            {
+                return Comparer<string>.Default.Compare(tx.Text, ty.Text);
+            }
+
+            return 0;
         }
     }
 

@@ -32,9 +32,6 @@ namespace Windows_Terminal_Customizer
         public string name { get; set; }
         public string source { get; set; }
         public string colorScheme { get; set; }
-
-        // New below this line
-
         public double? acrylicOpacity { get; set; } = null;
         public string background { get; set; }
         public string backgroundImage { get; set; }
@@ -65,6 +62,11 @@ namespace Windows_Terminal_Customizer
 
         [JsonProperty(PropertyName = "experimental.retroTerminalEffect")]
         public bool experimentalRetroTerminalEffect { get; set; } = false;
+
+        public object ShallowCopy()
+        {
+            return this.MemberwiseClone();
+        }
     }
 
     public class Scheme

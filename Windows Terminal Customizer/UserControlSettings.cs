@@ -24,8 +24,9 @@ namespace Windows_Terminal_Customizer
         public void Setup(Form1 parent, string schemeFolder, string wtFolder, string windowsTerminalEXE, bool removeUnusedSchemes)
         {
             this._parent = parent;
-            
-            parentSchemesFolderSelected(schemeFolder);
+
+            textBoxSchemeFolder.Text = schemeFolder;
+            //parentSchemesFolderSelected(schemeFolder);
             windowsTerminalFolder = wtFolder;
             textBoxWindowsTerminalEXE.Text = windowsTerminalEXE;
             parentWindowsTerminalSelected(windowsTerminalFolder, windowsTerminalEXE);
@@ -61,7 +62,7 @@ namespace Windows_Terminal_Customizer
 
         private void parentSchemesFolderSelected(string folder)
         {
-            textBoxSchemeFolder.Text = folder;
+            //textBoxSchemeFolder.Text = folder;
 
             _parent.schemesFolderSelected(folder);
         }
