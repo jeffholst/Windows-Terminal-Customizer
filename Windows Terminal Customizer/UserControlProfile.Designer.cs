@@ -66,6 +66,7 @@
             this.label12 = new System.Windows.Forms.Label();
             this.linkLabelScheme = new System.Windows.Forms.LinkLabel();
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
+            this.labelImageFolderError = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarBackgroundOpacity)).BeginInit();
             this.tableLayoutPanel1.SuspendLayout();
@@ -167,6 +168,7 @@
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.groupBox1.Controls.Add(this.labelImageFolderError);
             this.groupBox1.Controls.Add(this.checkBoxRotateSchemes);
             this.groupBox1.Controls.Add(this.comboBoxRotationSchedule);
             this.groupBox1.Controls.Add(this.label11);
@@ -187,7 +189,7 @@
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Location = new System.Drawing.Point(28, 238);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(427, 247);
+            this.groupBox1.Size = new System.Drawing.Size(427, 261);
             this.groupBox1.TabIndex = 11;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Background";
@@ -324,7 +326,7 @@
             this.tableLayoutPanel1.Controls.Add(this.label7, 2, 0);
             this.tableLayoutPanel1.Controls.Add(this.comboBoxBackgroundImageAlignment, 1, 0);
             this.tableLayoutPanel1.Controls.Add(this.label6, 0, 0);
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(6, 51);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(6, 54);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
@@ -478,6 +480,17 @@
             this.linkLabelScheme.Text = "View Scheme";
             this.linkLabelScheme.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelScheme_LinkClicked);
             // 
+            // labelImageFolderError
+            // 
+            this.labelImageFolderError.AutoSize = true;
+            this.labelImageFolderError.ForeColor = System.Drawing.Color.Red;
+            this.labelImageFolderError.Location = new System.Drawing.Point(81, 238);
+            this.labelImageFolderError.Name = "labelImageFolderError";
+            this.labelImageFolderError.Size = new System.Drawing.Size(75, 13);
+            this.labelImageFolderError.TabIndex = 30;
+            this.labelImageFolderError.Text = "Error Message";
+            this.labelImageFolderError.Visible = false;
+            // 
             // UserControlProfile
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -489,7 +502,7 @@
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.buttonMakeDefault);
             this.Name = "UserControlProfile";
-            this.Size = new System.Drawing.Size(483, 498);
+            this.Size = new System.Drawing.Size(483, 509);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarBackgroundOpacity)).EndInit();
@@ -541,5 +554,6 @@
         private System.Windows.Forms.LinkLabel linkLabelScheme;
         private System.Windows.Forms.TextBox textBoxSource;
         private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.Label labelImageFolderError;
     }
 }

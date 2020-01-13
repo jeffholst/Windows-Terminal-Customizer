@@ -241,15 +241,13 @@ namespace Windows_Terminal_Customizer
             }
         }
 
-        public void UpdateSchemes(List<Scheme> schemes)
+        public void UpdateSchemes(TreeNode allSchemesNode)
         {
             comboBoxScheme.Items.Clear();
 
-            List<Scheme> sortedSchemes = schemes.OrderBy(o => o.name).ToList();
-
-            foreach (Scheme scheme in sortedSchemes)
+            foreach (TreeNode tn in allSchemesNode.Nodes)
             {
-                comboBoxScheme.Items.Add(scheme.name);
+                comboBoxScheme.Items.Add(((Scheme)tn.Tag).name);
             }
         }
 
@@ -385,6 +383,7 @@ namespace Windows_Terminal_Customizer
         {
             if (!populating)
             {
+                CheckImageFolder();
                 SaveRotationInformation();
             }
         }
@@ -406,7 +405,41 @@ namespace Windows_Terminal_Customizer
         {
             if (!populating)
             {
+                CheckImageFolder();
                 SaveRotationInformation();
+            }
+        }
+
+        private void CheckImageFolder()
+        {
+            FileInfo[] files;
+            string[] extensions;
+
+            labelImageFolderError.Visible = false;
+
+            if (string.IsNullOrEmpty(textBoxRotateImageFolder.Text))
+            {
+                labelImageFolderError.Text = "Cannot be blank";
+                labelImageFolderError.Visible = true;
+            }
+            else if (!Directory.Exists(textBoxRotateImageFolder.Text))
+            {
+                labelImageFolderError.Text = "Invalid directory";
+                labelImageFolderError.Visible = true;
+            }
+            else
+            {
+                extensions = new string[] { ".jpg", ".gif", ".png", ".jpeg" };
+
+                files = new DirectoryInfo(textBoxRotateImageFolder.Text).EnumerateFiles()
+                        .Where(f => extensions.Contains(f.Extension.ToLower()))
+                        .ToArray();
+
+                if (files.Length < 1)
+                {
+                    labelImageFolderError.Text = "No .jpg, .gif, .png, or .jpeg images found";
+                    labelImageFolderError.Visible = true;
+                }
             }
         }
 

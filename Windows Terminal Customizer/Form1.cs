@@ -94,7 +94,7 @@ namespace Windows_Terminal_Customizer
             userControlScheme1.Setup(this);
 
             myCustomProfile = LoadCustomProfile();
-            ReconcileCustomProfile();
+            DoAllReconciliation();
 
             myTimer = new CustomizerTimer(this, userControlProfile1);
 
@@ -236,6 +236,9 @@ namespace Windows_Terminal_Customizer
                 schemeNode.Nodes.Add(scheme.name);
             }
 
+            treeView1.TreeViewNodeSorter = new NodeSorter(schemeNode);
+            treeView1.Sort();
+
             keyBindNode = treeView1.Nodes[0].Nodes[3];    // KeyBindings
 
             keyBindNode.Nodes.Clear();
@@ -250,6 +253,7 @@ namespace Windows_Terminal_Customizer
 
         private void TreeViewNodeClicked()
         {
+            Scheme scheme;
             CustomItem customItem;
 
             treeView1.ContextMenuStrip = null;
@@ -273,7 +277,8 @@ namespace Windows_Terminal_Customizer
                             break;
                         case 2:
                             SetCurrentDialog(Dialogs.Scheme);
-                            userControlScheme1.Populate(settings.schemes[treeView1.SelectedNode.Index], treeView1.SelectedNode);
+                            scheme = FindSchemeFromAllSchemesNode(treeView1.SelectedNode.Text);
+                            userControlScheme1.Populate(scheme, treeView1.SelectedNode);
                             break;
                         case 3:
                             SetCurrentDialog(Dialogs.KeyBinding);
@@ -283,7 +288,7 @@ namespace Windows_Terminal_Customizer
                 else if (treeView1.SelectedNode.Level == 1 && treeView1.SelectedNode.Parent.Index == 1)
                 {
                     SetCurrentDialog(Dialogs.Scheme);
-                    userControlScheme1.Populate(schemes[treeView1.SelectedNode.Index], null);
+                    userControlScheme1.Populate((Scheme)treeView1.SelectedNode.Tag, null);
                 }
             }
         }
@@ -327,9 +332,9 @@ namespace Windows_Terminal_Customizer
 
         {
             Scheme myScheme;
+            TreeNode newNode;
             TreeNode allSchemes;
             string[] schemeFiles;
-            schemes = new List<Scheme>();
 
             if (!string.IsNullOrEmpty(folder) && Directory.Exists(folder))
             {
@@ -353,12 +358,13 @@ namespace Windows_Terminal_Customizer
                     {
                         JsonSerializer serializer = new JsonSerializer();
                         myScheme = (Scheme)serializer.Deserialize(file, typeof(Scheme));
-                        schemes.Add(myScheme);
-                        allSchemes.Nodes.Add(myScheme.name);
+                        newNode = new TreeNode(myScheme.name);
+                        newNode.Tag = myScheme;
+                        allSchemes.Nodes.Add(newNode);
                     }
                 }
 
-                userControlProfile1.UpdateSchemes(schemes);
+                userControlProfile1.UpdateSchemes(allSchemesNode);
             }
         }
 
@@ -415,6 +421,8 @@ namespace Windows_Terminal_Customizer
 
         public void profileUpdated(Profile profile, TreeNode treeNode)
         {
+            Scheme scheme;
+
             if (treeNode != null)
             {
                 treeNode.Text = profile.name;
@@ -422,19 +430,20 @@ namespace Windows_Terminal_Customizer
 
             if (!string.IsNullOrEmpty(profile.colorScheme))
             {
-                var foundScheme = settings.schemes.Where(s => s.name == profile.colorScheme);
-
-                if (foundScheme.Count() != 1)  // Add Scheme if not already present
+                if (!SchemeNodeExists(profile.colorScheme))
                 {
-                    var scheme = schemes.Where(s => s.name == profile.colorScheme);
-
-                    settings.schemes.Add(scheme.First());
                     AddSchemeNode(schemeNode.Nodes, profile.colorScheme);
+                    scheme = FindSchemeFromAllSchemesNode(profile.colorScheme);
+
+                    if (!settings.schemes.Contains(scheme))
+                    {
+                        settings.schemes.Add(scheme);
+                    }
                 }
 
                 if (removeUnusedSchemes)
                 {
-                    RemoveUnusedSchemes();
+                    DoAllReconciliation();
                 }
 
                 QueueWriteToFile();
@@ -442,7 +451,7 @@ namespace Windows_Terminal_Customizer
             
         }
 
-        public void AddSchemeNode(TreeNodeCollection nodes, string schemeName)
+        private void AddSchemeNode(TreeNodeCollection nodes, string schemeName)
         {
             if (treeView1.InvokeRequired)
             {
@@ -452,6 +461,12 @@ namespace Windows_Terminal_Customizer
             else
             {
                 nodes.Add(schemeName);
+
+                var tn = treeView1.TopNode;
+                treeView1.TreeViewNodeSorter = new NodeSorter(schemeNode);
+                treeView1.Sort();
+
+                treeView1.TopNode = tn;
             }
         }
 
@@ -506,36 +521,6 @@ namespace Windows_Terminal_Customizer
             return (myTreeNode);
         }
 
-        private void RemoveUnusedSchemes()
-        {
-            TreeNode nodeToRemove;
-            List<Scheme> schemesToRemove;
-
-            schemesToRemove = new List<Scheme>();
-
-            foreach(Scheme scheme in settings.schemes)
-            {
-                var profile = settings.profiles.Where(p => p.colorScheme == scheme.name);
-
-                if (profile.Count() < 1)
-                {
-                    schemesToRemove.Add(scheme);
-                }
-            }
-
-            foreach(Scheme scheme in schemesToRemove)
-            {
-                settings.schemes.Remove(scheme);
-
-                nodeToRemove = FindNode(schemeNode, scheme.name);
-
-                if (nodeToRemove != null )
-                {
-                    RemoveNode(schemeNode.Nodes, nodeToRemove);
-                }
-            }
-        }
-
         public void RemoveNode(TreeNodeCollection nodes, TreeNode nodeToRemove)
         {
             if (treeView1.InvokeRequired)
@@ -552,20 +537,21 @@ namespace Windows_Terminal_Customizer
         public void  addSchemeFile(string fileName)
         {
             Scheme scheme;
+            TreeNode newNode;
 
             using (StreamReader file = File.OpenText(fileName))
             {
                 JsonSerializer serializer = new JsonSerializer();
                 scheme = (Scheme)serializer.Deserialize(file, typeof(Scheme));
-                schemes.Add(scheme);
                 settings.schemes.Add(scheme);
             }
 
-            userControlProfile1.UpdateSchemes(schemes);
-            //schemeNode.Nodes.Add(scheme.name);
-            allSchemesNode.Nodes.Add(scheme.name);
+            newNode = new TreeNode(scheme.name);
+            newNode.Tag = scheme;
+            allSchemesNode.Nodes.Add(newNode);
             treeView1.TreeViewNodeSorter = new NodeSorter(allSchemesNode);
             treeView1.Sort();
+            userControlProfile1.UpdateSchemes(allSchemesNode);
         }
 
         public string GetSchemesFolder
@@ -573,7 +559,28 @@ namespace Windows_Terminal_Customizer
             get { return schemesFolder; }
         }
 
-        private Scheme FindScheme(string schemeName)
+        private bool SchemeNodeExists(string schemeName)
+        {
+            int loop;
+            bool foundScheme;
+
+            loop = 0;
+            foundScheme = false;
+
+            while (!foundScheme && loop < schemeNode.Nodes.Count)
+            {
+                if (schemeNode.Nodes[loop].Name == schemeName)
+                {
+                    foundScheme = true;
+                }
+
+                loop++;
+            }
+
+            return (foundScheme);
+        }
+
+        private Scheme FindSchemeFromAllSchemesNode(string schemeName)
         {
             int loop;
             Scheme tmpScheme;
@@ -582,9 +589,9 @@ namespace Windows_Terminal_Customizer
             loop = 0;
             foundScheme = null;
             
-            while (foundScheme == null && loop < schemes.Count)
+            while (foundScheme == null && loop < allSchemesNode.Nodes.Count)
             {
-                tmpScheme = schemes[loop];
+                tmpScheme = (Scheme)allSchemesNode.Nodes[loop].Tag;
 
                 if (tmpScheme.name == schemeName)
                 {
@@ -625,7 +632,7 @@ namespace Windows_Terminal_Customizer
         {
             CustomItem item;
 
-            item = GetCustomItemByGUID(GUID);
+           item = GetCustomItemByGUID(GUID);
 
             if (item != null)
             {
@@ -671,6 +678,80 @@ namespace Windows_Terminal_Customizer
             }
 
             return (cp);
+        }
+        
+        private void DoAllReconciliation()
+        {
+            ReconcileCustomProfile();
+            RemoveUnusedSchemes();
+            RemoveDuplicateSchemesInSettings();
+        }
+        
+        private void RemoveDuplicateSchemesInSettings()
+        {
+            TreeNode nodeToRemove;
+
+            var duplicates = settings.schemes.GroupBy(s => s.name)
+            .SelectMany(grp => grp.Skip(1));
+
+            if (duplicates.Count() > 0)
+            {
+                foreach (Scheme s in duplicates)
+                {
+                    settings.schemes.Remove(s);
+                    nodeToRemove = FindNode(schemeNode, s.name);
+                    RemoveNode(schemeNode.Nodes, nodeToRemove);
+                }
+
+                QueueWriteToFile();
+            }
+    }
+        private void RemoveUnusedSchemes()
+        {
+            TreeNode nodeToRemove;
+            List<Scheme> schemesToRemove;
+            //List<TreeNode> treeNodesToRemove;
+
+            schemesToRemove = new List<Scheme>();
+
+            foreach (Scheme scheme in settings.schemes)
+            {
+                var profile = settings.profiles.Where(p => p.colorScheme == scheme.name);
+
+                if (profile.Count() < 1)
+                {
+                    schemesToRemove.Add(scheme);
+                }
+            }
+
+            foreach (Scheme scheme in schemesToRemove)
+            {
+                settings.schemes.Remove(scheme);
+
+                nodeToRemove = FindNode(schemeNode, scheme.name);
+
+                if (nodeToRemove != null)
+                {
+                    RemoveNode(schemeNode.Nodes, nodeToRemove);
+                }
+            }
+
+            //treeNodesToRemove = new List<TreeNode>();
+
+            //foreach (TreeNode tn in schemeNode.Nodes)
+            //{
+            //    var profile = settings.profiles.Where(p => p.colorScheme == tn.Text);
+
+            //    if (profile.Count() < 1)
+            //    {
+            //        treeNodesToRemove.Add(tn);
+            //    }
+            //}
+
+            //foreach (TreeNode tn in treeNodesToRemove)
+            //{
+            //    RemoveNode(schemeNode.Nodes, tn);
+            //}
         }
 
         private void ReconcileCustomProfile()
@@ -839,9 +920,9 @@ namespace Windows_Terminal_Customizer
 
             random = new Random();
 
-            randomIndex = random.Next(0, schemes.Count() - 1);
+            randomIndex = random.Next(0, allSchemesNode.Nodes.Count - 1);
 
-            schemeName = schemes[randomIndex].name;
+            schemeName = allSchemesNode.Nodes[randomIndex].Text;
 
             return (schemeName);
         }
@@ -1098,11 +1179,11 @@ namespace Windows_Terminal_Customizer
                 profileToDelete = (Profile)(treeView1.SelectedNode.Tag);
 
                 settings.profiles.Remove(profileToDelete);
+                QueueWriteToFile();
 
                 treeView1.SelectedNode.Remove();
 
-                QueueWriteToFile();
-                ReconcileCustomProfile();
+                DoAllReconciliation();
             }
         }
 
@@ -1113,12 +1194,70 @@ namespace Windows_Terminal_Customizer
 
         private void allSchemeseCopy_Click(object sender, EventArgs e)
         {
+            string json;
+            TreeNode tn;
+            Scheme scheme;
+            string newFile;
+            string schemeName;
+            string originalFile;
+            string newSchemeName;
 
+            schemeName = treeView1.SelectedNode.Text;
+            originalFile = Path.Combine(GetSchemesFolder, string.Format("{0}.json", schemeName));
+            newSchemeName = string.Format("Copy {0}", schemeName);
+            newFile = Path.Combine(GetSchemesFolder, string.Format("{0}.json", newSchemeName));
+
+            using (StreamReader file = File.OpenText(originalFile))
+            {
+                JsonSerializer serializer = new JsonSerializer();
+                scheme = (Scheme)serializer.Deserialize(file, typeof(Scheme));
+            }
+
+            scheme.name = newSchemeName;
+
+            json = JsonConvert.SerializeObject(scheme,
+                Formatting.Indented,
+                new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+
+            File.WriteAllText(newFile, json);
+
+            addSchemeFile(newFile);
+
+            tn = FindNode(allSchemesNode, newSchemeName);
+            treeView1.SelectedNode = tn;
         }
 
         private void allSchemesDelete_Click(object sender, EventArgs e)
         {
+            string msg;
+            TreeNode tn;
+            string deleteFile;
+            var profiles = settings.profiles.Where(p => p.colorScheme == treeView1.SelectedNode.Text);
 
+            if (profiles.Count() > 0)
+            {
+                msg = string.Format("Scheme is being used by the following profiles:\r\n", profiles.Count());
+                foreach (Profile p in profiles)
+                {
+                    msg += string.Format("\r\n{0}", p.name);
+                }
+                
+                var cannotDelete = MessageBox.Show(msg, "Cannot delete scheme", MessageBoxButtons.OK);
+            }
+            else
+            {
+                msg = string.Format("Really delete '{0}'?", treeView1.SelectedNode.Text);
+
+                var confirmDelete = MessageBox.Show(msg, "Delete Scheme?", MessageBoxButtons.YesNo);
+
+                if (confirmDelete == DialogResult.Yes)
+                {
+                    deleteFile = Path.Combine(GetSchemesFolder, string.Format("{0}.json", treeView1.SelectedNode.Text));
+                    File.Delete(deleteFile);
+                    tn = FindNode(allSchemesNode, treeView1.SelectedNode.Text);
+                    treeView1.Nodes.Remove(tn);
+                }
+            }
         }
 
         private void addToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1131,10 +1270,13 @@ namespace Windows_Terminal_Customizer
         private void newSchemeDialog_FileOk(object sender, CancelEventArgs e)
         {
             string json;
+            TreeNode tn;
             Scheme newScheme;
+            string schemeName;
 
             newScheme = new Scheme();
-            newScheme.name = Path.GetFileNameWithoutExtension(newSchemeDialog.FileName);
+            schemeName = Path.GetFileNameWithoutExtension(newSchemeDialog.FileName);
+            newScheme.name = schemeName;
 
             json = JsonConvert.SerializeObject(newScheme,
                 Formatting.Indented,
@@ -1143,16 +1285,19 @@ namespace Windows_Terminal_Customizer
             File.WriteAllText(newSchemeDialog.FileName, json);
 
             addSchemeFile(newSchemeDialog.FileName);
+
+            tn = FindNode(allSchemesNode, schemeName);
+            treeView1.SelectedNode = tn;
         }
     }
 
     public class NodeSorter : System.Collections.IComparer
     {
-        TreeNode allSchemesNode;
+        TreeNode parentNode;
 
-        public NodeSorter(TreeNode allSchemesNode) 
+        public NodeSorter(TreeNode parentNode) 
         {
-            this.allSchemesNode = allSchemesNode;
+            this.parentNode = parentNode;
         }
 
         public int Compare(object x, object y)
@@ -1161,7 +1306,7 @@ namespace Windows_Terminal_Customizer
             TreeNode tx = x as TreeNode;
             TreeNode ty = y as TreeNode;
             
-            if (tx.Parent != null && ty.Parent != null && tx.Parent.Equals(allSchemesNode))
+            if (tx.Parent != null && ty.Parent != null && tx.Parent.Equals(parentNode))
             {
                 return Comparer<string>.Default.Compare(tx.Text, ty.Text);
             }
