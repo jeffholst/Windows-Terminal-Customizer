@@ -29,16 +29,16 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.TreeNode treeNode7 = new System.Windows.Forms.TreeNode("Global");
-            System.Windows.Forms.TreeNode treeNode8 = new System.Windows.Forms.TreeNode("Profiles");
-            System.Windows.Forms.TreeNode treeNode9 = new System.Windows.Forms.TreeNode("Schemes");
-            System.Windows.Forms.TreeNode treeNode10 = new System.Windows.Forms.TreeNode("KeyBindings");
-            System.Windows.Forms.TreeNode treeNode11 = new System.Windows.Forms.TreeNode("Settings", new System.Windows.Forms.TreeNode[] {
-            treeNode7,
-            treeNode8,
-            treeNode9,
-            treeNode10});
-            System.Windows.Forms.TreeNode treeNode12 = new System.Windows.Forms.TreeNode("All Schemes");
+            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Global");
+            System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Profiles");
+            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Schemes");
+            System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("KeyBindings");
+            System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("Settings", new System.Windows.Forms.TreeNode[] {
+            treeNode1,
+            treeNode2,
+            treeNode3,
+            treeNode4});
+            System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("All Schemes");
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.menuFile = new System.Windows.Forms.ToolStripMenuItem();
             this.menuFileOpen = new System.Windows.Forms.ToolStripMenuItem();
@@ -67,13 +67,13 @@
             this.contextMenuAllSchemesChildNode = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.allSchemeseCopy = new System.Windows.Forms.ToolStripMenuItem();
             this.allSchemesDelete = new System.Windows.Forms.ToolStripMenuItem();
+            this.newSchemeDialog = new System.Windows.Forms.SaveFileDialog();
             this.userControlSettings1 = new Windows_Terminal_Customizer.UserControlSettings();
             this.userControlHelp1 = new Windows_Terminal_Customizer.UserControlHelp();
             this.userControlKeyBinding1 = new Windows_Terminal_Customizer.UserControlKeyBinding();
             this.userControlScheme1 = new Windows_Terminal_Customizer.UserControlScheme();
             this.userControlDefault1 = new Windows_Terminal_Customizer.UserControlDefault();
             this.userControlProfile1 = new Windows_Terminal_Customizer.UserControlProfile();
-            this.newSchemeDialog = new System.Windows.Forms.SaveFileDialog();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -206,6 +206,10 @@
             // splitContainer1.Panel1
             // 
             this.splitContainer1.Panel1.Controls.Add(this.treeView1);
+            // 
+            // splitContainer1.Panel2
+            // 
+            this.splitContainer1.Panel2.AutoScroll = true;
             this.splitContainer1.Size = new System.Drawing.Size(695, 890);
             this.splitContainer1.SplitterDistance = 200;
             this.splitContainer1.TabIndex = 2;
@@ -216,21 +220,21 @@
             this.treeView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.treeView1.Location = new System.Drawing.Point(0, 0);
             this.treeView1.Name = "treeView1";
-            treeNode7.Name = "Node0";
-            treeNode7.Text = "Global";
-            treeNode8.Name = "Node1";
-            treeNode8.Text = "Profiles";
-            treeNode9.Name = "Node2";
-            treeNode9.Text = "Schemes";
-            treeNode10.Name = "Node3";
-            treeNode10.Text = "KeyBindings";
-            treeNode11.Name = "Node0";
-            treeNode11.Text = "Settings";
-            treeNode12.Name = "Node1";
-            treeNode12.Text = "All Schemes";
+            treeNode1.Name = "Node0";
+            treeNode1.Text = "Global";
+            treeNode2.Name = "Node1";
+            treeNode2.Text = "Profiles";
+            treeNode3.Name = "Node2";
+            treeNode3.Text = "Schemes";
+            treeNode4.Name = "Node3";
+            treeNode4.Text = "KeyBindings";
+            treeNode5.Name = "Node0";
+            treeNode5.Text = "Settings";
+            treeNode6.Name = "Node1";
+            treeNode6.Text = "All Schemes";
             this.treeView1.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode11,
-            treeNode12});
+            treeNode5,
+            treeNode6});
             this.treeView1.Size = new System.Drawing.Size(200, 890);
             this.treeView1.TabIndex = 0;
             this.treeView1.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.treeView1_ItemDrag);
@@ -318,6 +322,11 @@
             this.allSchemesDelete.Text = "Delete";
             this.allSchemesDelete.Click += new System.EventHandler(this.allSchemesDelete_Click);
             // 
+            // newSchemeDialog
+            // 
+            this.newSchemeDialog.Filter = "JSON Files|*.json";
+            this.newSchemeDialog.FileOk += new System.ComponentModel.CancelEventHandler(this.newSchemeDialog_FileOk);
+            // 
             // userControlSettings1
             // 
             this.userControlSettings1.AutoScroll = true;
@@ -370,11 +379,6 @@
             this.userControlProfile1.Name = "userControlProfile1";
             this.userControlProfile1.Size = new System.Drawing.Size(483, 498);
             this.userControlProfile1.TabIndex = 0;
-            // 
-            // newSchemeDialog
-            // 
-            this.newSchemeDialog.Filter = "JSON Files|*.json";
-            this.newSchemeDialog.FileOk += new System.ComponentModel.CancelEventHandler(this.newSchemeDialog_FileOk);
             // 
             // Form1
             // 
