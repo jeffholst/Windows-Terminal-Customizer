@@ -21,6 +21,7 @@ namespace Windows_Terminal_Customizer
         Form1 _parent;
         Scheme scheme;
         TreeNode treeNode;
+        Controls _controls;
         Scheme savedScheme;
         bool populating = false;
         ControlGrouping activeControl;
@@ -29,48 +30,22 @@ namespace Windows_Terminal_Customizer
         public UserControlScheme()
         {
             InitializeComponent();
-            PopulateSizeCombo();
-            PopulateFontCombo();
         }
 
-        private void PopulateSizeCombo()
+        public void Setup(Form1 parent, Controls controls)
         {
-            var dataSource = new List<Source>();
-            dataSource.Add(new Source() { Name = "8px", Value = "8px" });
-            dataSource.Add(new Source() { Name = "10px", Value = "10px" });
-            dataSource.Add(new Source() { Name = "12px", Value = "12px" });
-            dataSource.Add(new Source() { Name = "14px", Value = "14px" });
-            dataSource.Add(new Source() { Name = "18px", Value = "18px" });
-            dataSource.Add(new Source() { Name = "20px", Value = "20px" });
-            comboBoxSize.DataSource = dataSource;
-            comboBoxSize.DisplayMember = "Name";
-            comboBoxSize.ValueMember = "Value";
+            _parent = parent;
+            _controls = controls;
 
-            comboBoxSize.SelectedIndex = 3;
-        }
+            populating = true;
 
-        private void PopulateFontCombo()
-        {
-            var dataSource = new List<Source>();
-            dataSource.Add(new Source() { Name = "Arial", Value = "Arial" });
-            dataSource.Add(new Source() { Name = "Cambria", Value = "Cambria" });
-            dataSource.Add(new Source() { Name = "Georgia", Value = "Georgia" });
-            dataSource.Add(new Source() { Name = "Impact", Value = "Impact" });
-            dataSource.Add(new Source() { Name = "Monospace", Value = "monospace" });
-            dataSource.Add(new Source() { Name = "Times", Value = "times" });
-
-            comboBoxFont.DataSource = dataSource;
-            comboBoxFont.DisplayMember = "Name";
-            comboBoxFont.ValueMember = "Value";
-
-            comboBoxFont.SelectedIndex = 0;
-        }
-
-        public void Setup(Form1 parent)
-        {
-            this._parent = parent;
             InitializeSchemeColors();
-            PopulateSizeCombo();
+            _parent.SetComboBoxDataSource(comboBoxSize, _controls.profile.fontSizes);
+            _parent.SetComboBoxDataSource(comboBoxFont, _controls.profile.fontFaces);
+            _parent.SetComboBoxDataSource(comboBoxStyle, new List<string>() { "Palette|100", "Lorem ipsum|200", "Code|300", "All Characters|400" });
+            comboBoxStyle.SelectedValue = "100";
+
+            populating = false;
         }
 
         private void InitializeSchemeColors()
@@ -78,23 +53,23 @@ namespace Windows_Terminal_Customizer
             myControlGrouping = new Dictionary<SchemeColors, ControlGrouping>();
 
             myControlGrouping.Add(SchemeColors.Black, new ControlGrouping() { button = buttonBlack, label = labelBlack, textBox = textBoxBlack });
-            myControlGrouping.Add(SchemeColors.Red, new ControlGrouping() { button = buttonRed, label = labelRed, textBox =  textBoxRed});
-            myControlGrouping.Add(SchemeColors.Green, new ControlGrouping() { button = buttonGreen, label = labelGreen, textBox = textBoxGreen});
-            myControlGrouping.Add(SchemeColors.Yellow, new ControlGrouping() { button = buttonYellow, label = labelYellow, textBox = textBoxYellow});
-            myControlGrouping.Add(SchemeColors.Blue, new ControlGrouping() { button = buttonBlue, label = labelBlue, textBox = textBoxBlue});
-            myControlGrouping.Add(SchemeColors.Purple, new ControlGrouping() { button = buttonPurple, label = labelPurple, textBox = textBoxPurple});
-            myControlGrouping.Add(SchemeColors.Cyan, new ControlGrouping() { button = buttonCyan, label = labelCyan, textBox = textBoxCyan});
-            myControlGrouping.Add(SchemeColors.White, new ControlGrouping() { button = buttonWhite, label = labelWhite, textBox = textBoxWhite});
-            myControlGrouping.Add(SchemeColors.BrightBlack, new ControlGrouping() { button = buttonBrightBlack, label = labelBrightBlack, textBox = textBoxBrightBlack});
-            myControlGrouping.Add(SchemeColors.BrightRed, new ControlGrouping() { button = buttonBrightRed, label = labelBrightRed, textBox = textBoxBrightRed});
-            myControlGrouping.Add(SchemeColors.BrightGreen, new ControlGrouping() { button = buttonBrightGreen, label = labelBrightGreen, textBox =  textBoxBrightGreen});
-            myControlGrouping.Add(SchemeColors.BrightYellow, new ControlGrouping() { button = buttonBrightYellow, label = labelBrightYellow, textBox = textBoxBrightYellow});
-            myControlGrouping.Add(SchemeColors.BrightBlue, new ControlGrouping() { button = buttonBrightBlue, label = labelBrightBlue, textBox = textBoxBrightBlue});
-            myControlGrouping.Add(SchemeColors.BrightPurple, new ControlGrouping() { button = buttonBrightPurple, label = labelBrightPurple, textBox = textBoxBrightPurple});
-            myControlGrouping.Add(SchemeColors.BrightCyan, new ControlGrouping() { button = buttonBrightCyan, label = labelBrightCyan, textBox = textBoxBrightCyan});
-            myControlGrouping.Add(SchemeColors.BrightWhite, new ControlGrouping() { button = buttonBrightWhite, label = labelBrightWhite, textBox = textBoxBrightWhite});
-            myControlGrouping.Add(SchemeColors.Background, new ControlGrouping() { button = buttonBackground, label = labelBackground, textBox = textBoxBackground});
-            myControlGrouping.Add(SchemeColors.Foreground, new ControlGrouping() { button = buttonForeground, label = labelForeground, textBox = textBoxForeground});
+            myControlGrouping.Add(SchemeColors.Red, new ControlGrouping() { button = buttonRed, label = labelRed, textBox = textBoxRed });
+            myControlGrouping.Add(SchemeColors.Green, new ControlGrouping() { button = buttonGreen, label = labelGreen, textBox = textBoxGreen });
+            myControlGrouping.Add(SchemeColors.Yellow, new ControlGrouping() { button = buttonYellow, label = labelYellow, textBox = textBoxYellow });
+            myControlGrouping.Add(SchemeColors.Blue, new ControlGrouping() { button = buttonBlue, label = labelBlue, textBox = textBoxBlue });
+            myControlGrouping.Add(SchemeColors.Purple, new ControlGrouping() { button = buttonPurple, label = labelPurple, textBox = textBoxPurple });
+            myControlGrouping.Add(SchemeColors.Cyan, new ControlGrouping() { button = buttonCyan, label = labelCyan, textBox = textBoxCyan });
+            myControlGrouping.Add(SchemeColors.White, new ControlGrouping() { button = buttonWhite, label = labelWhite, textBox = textBoxWhite });
+            myControlGrouping.Add(SchemeColors.BrightBlack, new ControlGrouping() { button = buttonBrightBlack, label = labelBrightBlack, textBox = textBoxBrightBlack });
+            myControlGrouping.Add(SchemeColors.BrightRed, new ControlGrouping() { button = buttonBrightRed, label = labelBrightRed, textBox = textBoxBrightRed });
+            myControlGrouping.Add(SchemeColors.BrightGreen, new ControlGrouping() { button = buttonBrightGreen, label = labelBrightGreen, textBox = textBoxBrightGreen });
+            myControlGrouping.Add(SchemeColors.BrightYellow, new ControlGrouping() { button = buttonBrightYellow, label = labelBrightYellow, textBox = textBoxBrightYellow });
+            myControlGrouping.Add(SchemeColors.BrightBlue, new ControlGrouping() { button = buttonBrightBlue, label = labelBrightBlue, textBox = textBoxBrightBlue });
+            myControlGrouping.Add(SchemeColors.BrightPurple, new ControlGrouping() { button = buttonBrightPurple, label = labelBrightPurple, textBox = textBoxBrightPurple });
+            myControlGrouping.Add(SchemeColors.BrightCyan, new ControlGrouping() { button = buttonBrightCyan, label = labelBrightCyan, textBox = textBoxBrightCyan });
+            myControlGrouping.Add(SchemeColors.BrightWhite, new ControlGrouping() { button = buttonBrightWhite, label = labelBrightWhite, textBox = textBoxBrightWhite });
+            myControlGrouping.Add(SchemeColors.Background, new ControlGrouping() { button = buttonBackground, label = labelBackground, textBox = textBoxBackground });
+            myControlGrouping.Add(SchemeColors.Foreground, new ControlGrouping() { button = buttonForeground, label = labelForeground, textBox = textBoxForeground });
         }
 
         public void Populate(Scheme myScheme, TreeNode selectedTreeNode)
@@ -173,6 +148,12 @@ namespace Windows_Terminal_Customizer
             buttonForeground.BackColor = System.Drawing.ColorTranslator.FromHtml(scheme.foreground);
 
             populating = false;
+        }
+
+        public void SetPreview(ComboBox cbFontFace, ComboBox cbFontSize)
+        {
+            comboBoxFont.SelectedValue = cbFontFace.SelectedValue;
+            comboBoxSize.SelectedValue = cbFontSize.SelectedValue;
         }
 
         #region Change Button Color Clicks
@@ -513,11 +494,11 @@ namespace Windows_Terminal_Customizer
 
         private void UpdateSaveButtons()
         {
-            if ( FormIsValid() )
+            if (FormIsValid())
             {
                 buttonSaveAs.Enabled = true;
 
-               buttonSave.Enabled = !scheme.IsEqual(savedScheme);
+                buttonSave.Enabled = !scheme.IsEqual(savedScheme);
             }
             else
             {
@@ -529,7 +510,7 @@ namespace Windows_Terminal_Customizer
         {
             if (!populating)
             {
-                if ( !FormIsValid() || !scheme.IsEqual(savedScheme))
+                if (!FormIsValid() || !scheme.IsEqual(savedScheme))
                 {
                     buttonReset.Enabled = true;
                 }
@@ -554,7 +535,7 @@ namespace Windows_Terminal_Customizer
             {
                 loop = 0;
 
-                while (valid && loop < ((SchemeColors[])Enum.GetValues(typeof(SchemeColors))).Length )
+                while (valid && loop < ((SchemeColors[])Enum.GetValues(typeof(SchemeColors))).Length)
                 {
                     sc = ((SchemeColors[])Enum.GetValues(typeof(SchemeColors)))[loop];
                     valid = IsColorValid(myControlGrouping[sc].textBox.Text);
@@ -586,13 +567,13 @@ namespace Windows_Terminal_Customizer
 
             schemeName = Path.GetFileNameWithoutExtension(saveFileDialog1.FileName);
 
-            if ( string.Compare(schemeName, textBoxName.Text, true) != 0)
+            if (string.Compare(schemeName, textBoxName.Text, true) != 0)
             {
                 // write new scheme file to disk
                 scheme = (Scheme)scheme.ShallowCopy();
                 scheme.name = schemeName;
 
-                json = JsonConvert.SerializeObject(scheme, 
+                json = JsonConvert.SerializeObject(scheme,
                     Formatting.Indented,
                     new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
 
@@ -604,7 +585,7 @@ namespace Windows_Terminal_Customizer
             else
             {
                 // overwrite existing scheme file
-                json = JsonConvert.SerializeObject(scheme, 
+                json = JsonConvert.SerializeObject(scheme,
                     Formatting.Indented,
                     new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
 
@@ -615,7 +596,7 @@ namespace Windows_Terminal_Customizer
             UpdateResetButton();
             UpdateSaveButtons();
         }
-        
+
         private bool IsColorValid(string text)
         {
             Regex rg;
@@ -655,7 +636,7 @@ namespace Windows_Terminal_Customizer
 
             okay = IsColorValid(activeControl.textBox.Text);
 
-            if ( okay )
+            if (okay)
             {
                 activeControl.textBox.BackColor = System.Drawing.SystemColors.Window;
                 activeControl.button.BackColor = System.Drawing.ColorTranslator.FromHtml(activeControl.textBox.Text);
@@ -695,25 +676,220 @@ namespace Windows_Terminal_Customizer
 
         private void comboBoxFont_SelectedValueChanged(object sender, EventArgs e)
         {
-            UpdatePreview();
+            if (!populating)
+            {
+                UpdatePreview();
+            }
         }
 
         private void comboBoxSize_SelectedValueChanged(object sender, EventArgs e)
         {
-            UpdatePreview();
+            if (!populating)
+            {
+                UpdatePreview();
+            }
         }
 
-        private void UpdatePreview()
+        private void comboBoxStyle_SelectedValueChanged(object sender, EventArgs e)
+        {
+            if (!populating)
+            {
+                UpdatePreview();
+            }
+        }
+
+        private string GetRandomColor(Random random)
+        {
+            int count;
+            string rval;
+            int randomIndex;
+
+            count = myControlGrouping.Count();
+
+            randomIndex = random.Next(count);
+
+            rval = myControlGrouping[myControlGrouping.ElementAt(randomIndex).Key].textBox.Text;
+
+            return (rval);
+        }
+
+        private string GenerateAllCharacters(string[] colors)
+        {
+            char c;
+            StringBuilder html;
+
+            html = new StringBuilder();
+
+            html.Append("<p>");
+
+            for (int outer = 0; outer < colors.Length; outer++)
+            {
+                html.Append(string.Format("<span style='color: {0};'>", colors[outer]));
+
+                for (int loop = 32; loop < 127; loop++)
+                {
+                    c = (char)loop;
+                    html.Append(c.ToString());
+                }
+
+                html.Append("</span>");
+            }
+
+            html.Append("</p>");
+
+            return (html.ToString());
+        }
+
+        private void AllCharacters()
+        {
+            string style;
+            Random random;
+            StringBuilder html;
+
+            random = new Random();
+
+            html = new StringBuilder();
+
+            style = string.Format(@"<style type='text/css'>
+                .bodystyle {{
+                    background-color: {0};
+                    font-size: {1};
+                    font-family: {2};
+                }}
+                </style>", textBoxBackground.Text, comboBoxSize.SelectedValue, comboBoxFont.SelectedValue);
+
+            html.Append("<html>[REPLACE_STYLE]<body class='bodyStyle'>");
+
+            html.Append(GenerateAllCharacters(new string[] { textBoxWhite.Text, textBoxBrightWhite.Text }));
+            html.Append(GenerateAllCharacters(new string[] { textBoxPurple.Text, textBoxBrightPurple.Text }));
+            html.Append(GenerateAllCharacters(new string[] { textBoxBlue.Text, textBoxBrightBlue.Text }));
+            html.Append(GenerateAllCharacters(new string[] { textBoxCyan.Text, textBoxBrightCyan.Text }));
+            html.Append(GenerateAllCharacters(new string[] { textBoxGreen.Text, textBoxBrightGreen.Text }));
+            html.Append(GenerateAllCharacters(new string[] { textBoxYellow.Text, textBoxBrightYellow.Text }));
+            html.Append(GenerateAllCharacters(new string[] { textBoxRed.Text, textBoxBrightRed.Text }));
+
+            html.Append("</body></html>");
+            html.Replace("[REPLACE_STYLE]", style);
+
+            webBrowser1.DocumentText = html.ToString();
+        }
+
+        private void PreviewCSharp()
+        {
+            string style;
+            StringBuilder html;
+
+            html = new StringBuilder();
+
+            style = string.Format(@"<style type='text/css'>
+                .bodystyle {{
+                    background-color: {0};
+                    font-size: {1};
+                    font-family: {2};
+                    color: {3};
+                }}
+                .c1 {{
+                    color: {4};
+                }}
+                .c2 {{
+                    color: {5};
+                }}
+                .c3 {{
+                    color: {6};
+                }}
+                </style>", textBoxBackground.Text, comboBoxSize.SelectedValue, comboBoxFont.SelectedValue, 
+                    textBoxForeground.Text, textBoxBlue.Text, textBoxGreen.Text, textBoxRed.Text);
+
+            html.Append("<html>[REPLACE_STYLE]<body class='bodyStyle'>");
+
+            html.Append(@"<span class=""c1"">using</span> System;<br/>
+<span class=""c1"">public class Bubble_Sort</span><br/>
+{<br/>
+&nbsp;&nbsp;&nbsp;<span class=""c1"">public static void</span> <span class=""c2"">Main</span>(<span class=""c1"">string</span>[] args)<br/>
+&nbsp;&nbsp;&nbsp;{<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class=""c1"">int</span>[] a = { <span class=""c3"">3</span>, <span class=""c3"">0</span>, <span class=""c3"">2</span>, <span class=""c3"">5</span>, <span class=""c3"">-1</span>, <span class=""c3"">4</span>, <span class=""c3"">1</span> };<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class=""c1"">int</span> t;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Console.<span class=""c2"">WriteLine</span>(<span class=""c2"">""Original array :""</span>);<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class=""c1"">foreach</span> (<span class=""c1"">int</span> aa <span class=""c1"">in</span> a)<br/>           
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Console.<span class=""c2"">Write</span>(aa + "" "");<br/>          
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class=""c1"">for</span> (<span class=""c1"">int</span> p = <span class=""c3"">0</span>; p <= a.Length - <span class=""c3"">2</span>; p++)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class=""c1"">for</span> (<span class=""c1"">int</span> i = <span class=""c3"">0</span>; i <= a.Length - <span class=""c3"">2</span>; i++)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class=""c1"">if</span> (a[i] > a[i + <span class=""c3"">1</span>])<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;t = a[i + <span class=""c3"">1</span>];<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a[i + <span class=""c3"">1</span>] = a[i];<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a[i] = t;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Console.<span class=""c2"">WriteLine</span>(<span class=""c2"">""\n""</span>+<span class=""c2"">""Sorted array :""</span>);<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class=""c1"">foreach</span> (<span class=""c1"">int</span> aa <span class=""c1"">in</span> a)<br/>             
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Console.<span class=""c2"">Write</span>(aa + "" "");<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Console.<span class=""c2"">Write</span>(<span class=""c2"">""\n""</span>);<br/>    
+&nbsp;&nbsp;&nbsp;}<br/>
+}<br/></html>");
+            html.Append("</body></html>");
+            html.Replace("[REPLACE_STYLE]", style);
+
+            webBrowser1.DocumentText = html.ToString();
+        }
+
+        private void PreviewLorem()
+        {
+            Ipsum li;
+            string style;
+            StringBuilder html;
+            
+            li = new Ipsum();
+            html = new StringBuilder();
+
+            style = string.Format(@"<style type='text/css'>
+                .bodystyle {{
+                    background-color: {0};
+                    font-size: {1};
+                    font-family: {2};
+                }}
+                </style>", textBoxBackground.Text, comboBoxSize.SelectedValue, comboBoxFont.SelectedValue);
+
+            html.Append("<html>[REPLACE_STYLE]<body class='bodyStyle'>");
+
+            html.Append(string.Format("<p><span style='color: {0};'>{1}</span><span style='color:{2};'>{3}</span></p>", 
+                textBoxWhite.Text, li.GetWords(5), textBoxBrightWhite.Text, li.GetWords(5)));
+            html.Append(string.Format("<p><span style='color: {0};'>{1}</span><span style='color:{2};'>{3}</span></p>",
+                textBoxPurple.Text, li.GetWords(5), textBoxBrightPurple.Text, li.GetWords(5)));
+            html.Append(string.Format("<p><span style='color: {0};'>{1}</span><span style='color:{2};'>{3}</span></p>",
+                textBoxBlue.Text, li.GetWords(5), textBoxBrightBlue.Text, li.GetWords(5)));
+            html.Append(string.Format("<p><span style='color: {0};'>{1}</span><span style='color:{2};'>{3}</span></p>",
+                textBoxCyan.Text, li.GetWords(5), textBoxBrightCyan.Text, li.GetWords(5)));
+            html.Append(string.Format("<p><span style='color: {0};'>{1}</span><span style='color:{2};'>{3}</span></p>",
+                textBoxGreen.Text, li.GetWords(5), textBoxBrightGreen.Text, li.GetWords(5)));
+            html.Append(string.Format("<p><span style='color: {0};'>{1}</span><span style='color:{2};'>{3}</span></p>",
+                textBoxYellow.Text, li.GetWords(5), textBoxBrightYellow.Text, li.GetWords(5)));
+            html.Append(string.Format("<p><span style='color: {0};'>{1}</span><span style='color:{2};'>{3}</span></p>",
+                textBoxRed.Text, li.GetWords(5), textBoxBrightRed.Text, li.GetWords(5)));
+
+            html.Append("</body></html>");
+            html.Replace("[REPLACE_STYLE]", style);
+
+            webBrowser1.DocumentText = html.ToString();
+        }
+
+        private void PreviewPalette()
         {
             string tmp;
             int rows, cols;
-            string html, style, table; ;
+            StringBuilder html;
+            string style, table;
 
             string[] labels = new string[] {"Foreground", "Background", "White", "BrightWhite", "Black", "BrightBlack",
                 "Purple", "BrightPurple", "Blue", "BrightBlue", "Cyan", "BrightCyan",
                 "Green", "BrightGreen", "Yellow", "BrightYellow", "Red", "BrightRed"};
 
-            html = "<html>[REPLACE_STYLE]<body class='bodyStyle'>[REPLACE_TABLE]</body></html>";
+            html = new StringBuilder();
+
+            html.Append("<html>[REPLACE_STYLE]<body class='bodyStyle'>[REPLACE_TABLE]</body></html>");
 
             style = string.Format(@"<style type='text/css'>
                     .bodystyle {{
@@ -806,7 +982,7 @@ namespace Windows_Terminal_Customizer
                         font-size: {28};
                         font-family: {29};
                     }}
-                </style>", textBoxBackground.Text, 
+                </style>", textBoxBackground.Text,
                     textBoxForeground.Text, textBoxBackground.Text,
                     textBoxWhite.Text, textBoxBrightWhite.Text,
                     textBoxBlack.Text, textBoxBrightBlack.Text,
@@ -845,10 +1021,30 @@ namespace Windows_Terminal_Customizer
 
             table += "</table>";
 
-            html = html.Replace("[REPLACE_STYLE]", style);
-            html = html.Replace("[REPLACE_TABLE]", table);
+            html.Replace("[REPLACE_STYLE]", style);
+            html.Replace("[REPLACE_TABLE]", table);
 
-            webBrowser1.DocumentText = html;
+            webBrowser1.DocumentText = html.ToString();
+        }
+
+        private void UpdatePreview()
+        {
+            switch (comboBoxStyle.SelectedValue.ToString())
+            {
+                case "100":
+                    PreviewPalette();
+                    break;
+                case "200":
+                    PreviewLorem();
+                    break;
+                case "300":
+                    PreviewCSharp();
+                    break;
+                case "400":
+                    AllCharacters();
+                    break;
+            }
+
         }
     }
 
@@ -857,5 +1053,74 @@ namespace Windows_Terminal_Customizer
         public TextBox textBox { get; set; }
         public Label label { get; set; }
         public Button button { get; set; }
+    }
+
+    /// <summary>
+    /// Lorem Ipsum generator class for C#
+    /// Courtesty Tim Trott https://lonewolfonline.net/csharp-lorem-ipsum-generator/
+    /// </summary>
+    public class Ipsum
+    {
+        private string[] words = new string[] { "consetetur", "sadipscing", "elitr", "sed", "diam", "nonumy", "eirmod",
+    "tempor", "invidunt", "ut", "labore", "et", "dolore", "magna", "aliquyam", "erat", "sed", "diam", "voluptua",
+    "at", "vero", "eos", "et", "accusam", "et", "justo", "duo", "dolores", "et", "ea", "rebum", "stet", "clita",
+    "kasd", "gubergren", "no", "sea", "takimata", "sanctus", "est", "lorem", "ipsum", "dolor", "sit", "amet",
+    "lorem", "ipsum", "dolor", "sit", "amet", "consetetur", "sadipscing", "elitr", "sed", "diam", "nonumy", "eirmod",
+    "tempor", "invidunt", "ut", "labore", "et", "dolore", "magna", "aliquyam", "erat", "sed", "diam", "voluptua",
+    "at", "vero", "eos", "et", "accusam", "et", "justo", "duo", "dolores", "et", "ea", "rebum", "stet", "clita",
+    "kasd", "gubergren", "no", "sea", "takimata", "sanctus", "est", "lorem", "ipsum", "dolor", "sit", "amet",
+    "lorem", "ipsum", "dolor", "sit", "amet", "consetetur", "sadipscing", "elitr", "sed", "diam", "nonumy", "eirmod",
+    "tempor", "invidunt", "ut", "labore", "et", "dolore", "magna", "aliquyam", "erat", "sed", "diam", "voluptua",
+    "at", "vero", "eos", "et", "accusam", "et", "justo", "duo", "dolores", "et", "ea", "rebum", "stet", "clita",
+    "kasd", "gubergren", "no", "sea", "takimata", "sanctus", "est", "lorem", "ipsum", "dolor", "sit", "amet", "duis",
+    "autem", "vel", "eum", "iriure", "dolor", "in", "hendrerit", "in", "vulputate", "velit", "esse", "molestie",
+    "consequat", "vel", "illum", "dolore", "eu", "feugiat", "nulla", "facilisis", "at", "vero", "eros", "et",
+    "accumsan", "et", "iusto", "odio", "dignissim", "qui", "blandit", "praesent", "luptatum", "zzril", "delenit",
+    "augue", "duis", "dolore", "te", "feugait", "nulla", "facilisi", "lorem", "ipsum", "dolor", "sit", "amet",
+    "consectetuer", "adipiscing", "elit", "sed", "diam", "nonummy", "nibh", "euismod", "tincidunt", "ut", "laoreet",
+    "dolore", "magna", "aliquam", "erat", "volutpat", "ut", "wisi", "enim", "ad", "minim", "veniam", "quis",
+    "nostrud", "exerci", "tation", "ullamcorper", "suscipit", "lobortis", "nisl", "ut", "aliquip", "ex", "ea",
+    "commodo", "consequat", "duis", "autem", "vel", "eum", "iriure", "dolor", "in", "hendrerit", "in", "vulputate",
+    "velit", "esse", "molestie", "consequat", "vel", "illum", "dolore", "eu", "feugiat", "nulla", "facilisis", "at",
+    "vero", "eros", "et", "accumsan", "et", "iusto", "odio", "dignissim", "qui", "blandit", "praesent", "luptatum",
+    "zzril", "delenit", "augue", "duis", "dolore", "te", "feugait", "nulla", "facilisi", "nam", "liber", "tempor",
+    "cum", "soluta", "nobis", "eleifend", "option", "congue", "nihil", "imperdiet", "doming", "id", "quod", "mazim",
+    "placerat", "facer", "possim", "assum", "lorem", "ipsum", "dolor", "sit", "amet", "consectetuer", "adipiscing",
+    "elit", "sed", "diam", "nonummy", "nibh", "euismod", "tincidunt", "ut", "laoreet", "dolore", "magna", "aliquam",
+    "erat", "volutpat", "ut", "wisi", "enim", "ad", "minim", "veniam", "quis", "nostrud", "exerci", "tation",
+    "ullamcorper", "suscipit", "lobortis", "nisl", "ut", "aliquip", "ex", "ea", "commodo", "consequat", "duis",
+    "autem", "vel", "eum", "iriure", "dolor", "in", "hendrerit", "in", "vulputate", "velit", "esse", "molestie",
+    "consequat", "vel", "illum", "dolore", "eu", "feugiat", "nulla", "facilisis", "at", "vero", "eos", "et", "accusam",
+    "et", "justo", "duo", "dolores", "et", "ea", "rebum", "stet", "clita", "kasd", "gubergren", "no", "sea",
+    "takimata", "sanctus", "est", "lorem", "ipsum", "dolor", "sit", "amet", "lorem", "ipsum", "dolor", "sit",
+    "amet", "consetetur", "sadipscing", "elitr", "sed", "diam", "nonumy", "eirmod", "tempor", "invidunt", "ut",
+    "labore", "et", "dolore", "magna", "aliquyam", "erat", "sed", "diam", "voluptua", "at", "vero", "eos", "et",
+    "accusam", "et", "justo", "duo", "dolores", "et", "ea", "rebum", "stet", "clita", "kasd", "gubergren", "no",
+    "sea", "takimata", "sanctus", "est", "lorem", "ipsum", "dolor", "sit", "amet", "lorem", "ipsum", "dolor", "sit",
+    "amet", "consetetur", "sadipscing", "elitr", "at", "accusam", "aliquyam", "diam", "diam", "dolore", "dolores",
+    "duo", "eirmod", "eos", "erat", "et", "nonumy", "sed", "tempor", "et", "et", "invidunt", "justo", "labore",
+    "stet", "clita", "ea", "et", "gubergren", "kasd", "magna", "no", "rebum", "sanctus", "sea", "sed", "takimata",
+    "ut", "vero", "voluptua", "est", "lorem", "ipsum", "dolor", "sit", "amet", "lorem", "ipsum", "dolor", "sit",
+    "amet", "consetetur", "sadipscing", "elitr", "sed", "diam", "nonumy", "eirmod", "tempor", "invidunt", "ut",
+    "labore", "et", "dolore", "magna", "aliquyam", "erat", "consetetur", "sadipscing", "elitr", "sed", "diam",
+    "nonumy", "eirmod", "tempor", "invidunt", "ut", "labore", "et", "dolore", "magna", "aliquyam", "erat", "sed",
+    "diam", "voluptua", "at", "vero", "eos", "et", "accusam", "et", "justo", "duo", "dolores", "et", "ea",
+    "rebum", "stet", "clita", "kasd", "gubergren", "no", "sea", "takimata", "sanctus", "est", "lorem", "ipsum" };
+
+        public string GetWords(int NumWords)
+        {
+            StringBuilder Result = new StringBuilder();
+            Result.Append("Lorem ipsum dolor sit amet");
+
+            Random random = new Random();
+
+            for (int i = 0; i <= NumWords; i++)
+            {
+                Result.Append(" " + words[random.Next(words.Length - 1)]);
+            }
+
+            Result.Append(".");
+            return Result.ToString();
+        }
     }
 }

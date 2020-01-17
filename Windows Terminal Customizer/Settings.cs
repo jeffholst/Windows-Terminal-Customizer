@@ -46,7 +46,7 @@ namespace Windows_Terminal_Customizer
         public string cursorHeight { get; set; }
         public string cursorShape { get; set; }
         public string fontFace { get; set; }
-        public string fontSize { get; set; }
+        public int? fontSize { get; set; }
         public string foreground { get; set; }
         public bool hidden { get; set; } = false;
         public string historySize { get; set; }

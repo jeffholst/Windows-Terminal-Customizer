@@ -16,25 +16,30 @@ namespace Windows_Terminal_Customizer
         Form1 _parent;
         Profile profile;
         TreeNode treeNode;
+        Controls _controls;
         bool populating = false;
         private delegate void SafeCallDelegate(string text, string guid);
 
         public UserControlProfile()
         {
-            InitializeComponent();
+            InitializeComponent(); 
+        }
+
+        public void Setup(Form1 parent, Controls controls)
+        {
+            _parent = parent;
+            _controls = controls;
 
             populating = true;
+
             PopulateCommandlineCombo();
             PopulateBackgroundImageAlignment();
             PopulateBackgroundImageStretchMode();
             PopulateRotationSchedule();
+            _parent.SetComboBoxDataSource(comboBoxFontFace, _controls.profile.fontFaces);
+            _parent.SetComboBoxDataSource(comboBoxFontSize, _controls.profile.fontSizes);
 
             populating = false;
-        }
-
-        public void Setup(Form1 parent)
-        {
-            this._parent = parent;
         }
 
         private void PopulateCommandlineCombo()
@@ -196,6 +201,24 @@ namespace Windows_Terminal_Customizer
                 checkBoxRotateSchemes.Checked = false;
                 comboBoxRotationSchedule.SelectedItem = "15";
                 textBoxRotateImageFolder.Text = string.Empty;
+            }
+
+            if ( !string.IsNullOrEmpty(profile.fontFace))
+            {
+                comboBoxFontFace.SelectedValue = profile.fontFace;
+            }
+            else
+            {
+                comboBoxFontFace.SelectedValue = _parent.DefaultComboBoxValue;
+            }
+
+            if (profile.fontSize != null)
+            {
+                comboBoxFontSize.SelectedValue = profile.fontSize.ToString();
+            }
+            else
+            {
+                comboBoxFontSize.SelectedValue = _parent.DefaultComboBoxValue;
             }
 
             populating = false;
@@ -458,7 +481,7 @@ namespace Windows_Terminal_Customizer
 
         private void linkLabelScheme_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            _parent.ViewScheme(comboBoxScheme.SelectedItem.ToString());
+            _parent.ViewScheme(comboBoxScheme.SelectedItem.ToString(), comboBoxFontFace, comboBoxFontSize);
         }
 
         private void buttonMakeDefault_Click(object sender, EventArgs e)
@@ -480,6 +503,24 @@ namespace Windows_Terminal_Customizer
             if (!populating)
             {
                 profile.name = textBoxName.Text;
+                ProfileUpdated();
+            }
+        }
+
+        private void comboBoxFontFace_SelectedValueChanged(object sender, EventArgs e)
+        {
+            if (!populating)
+            {
+                profile.fontFace = _parent.GetSelectedComboBoxItemString(comboBoxFontFace);
+                ProfileUpdated();
+            }
+        }
+
+        private void comboBoxFontSize_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (!populating)
+            {
+                profile.fontSize = _parent.GetSelectedComboBoxItemInt(comboBoxFontSize);
                 ProfileUpdated();
             }
         }

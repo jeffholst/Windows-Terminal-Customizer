@@ -37,6 +37,8 @@ namespace Windows_Terminal_Customizer
         private CustomProfile myCustomProfile;
         private int minutesRunning;
         private bool pauseRotations;
+        private Controls controls;
+        public string DefaultComboBoxValue = "<Default>";
 
         private delegate void SafeCallDelegate(TreeNodeCollection nodes, string schemeName);
         private delegate void SafeCallDelegateRemoveNode(TreeNodeCollection nodes, TreeNode node);
@@ -62,6 +64,8 @@ namespace Windows_Terminal_Customizer
             pauseRotations = false;
 
             debug = GetTrueOrFalseAppSetting("Debug", false);
+
+            controls = ReadControls();
 
             LogIt("Application Started");
             LogIt(string.Format("Debug set to {0}", debug));
@@ -90,8 +94,8 @@ namespace Windows_Terminal_Customizer
 
             userControlDefault1.Setup(this);
             userControlSettings1.Setup(this, schemesFolder, windowsTerminalFolder, windowsTerminalEXE, removeUnusedSchemes);
-            userControlProfile1.Setup(this);
-            userControlScheme1.Setup(this);
+            userControlProfile1.Setup(this, controls);
+            userControlScheme1.Setup(this, controls);
 
             myCustomProfile = LoadCustomProfile();
             DoAllReconciliation();
@@ -102,6 +106,19 @@ namespace Windows_Terminal_Customizer
             writeToFileTimer.Tick += new EventHandler(WriteToFile);
             writeToFileTimer.Interval = 1000; // in milliseconds
             writeToFileTimer.Start();
+        }
+
+        private Controls ReadControls()
+        {
+            Controls myControl;
+
+            using (StreamReader file = File.OpenText("Controls.json"))
+            {
+                JsonSerializer serializer = new JsonSerializer();
+                myControl = (Controls)serializer.Deserialize(file, typeof(Controls));
+            }
+
+            return (myControl);
         }
 
         private void LogIt(string message, bool force = false)
@@ -143,6 +160,7 @@ namespace Windows_Terminal_Customizer
                         userControlDefault1.Visible = true;
                         break;
                     case Dialogs.Profile:
+                        splitContainer1.Panel2.AutoScrollMinSize = new System.Drawing.Size(200, 200);
                         userControlProfile1.Visible = true;
                         break;
                     case Dialogs.Scheme:
@@ -1004,29 +1022,18 @@ namespace Windows_Terminal_Customizer
             }
         }
 
-        public void ViewScheme(string schemeName)
+        public void ViewScheme(string schemeName, ComboBox comboBoxFontFace, ComboBox comboBoxFontSize)
         {
-            int index;
-            TreeNode foundScheme;
-            TreeNode allSchemesNode;
+            //int index;
+            TreeNode treeNode;
+            //TreeNode allSchemesNode;
 
-            index = 0;
-            foundScheme = null;
-            allSchemesNode = treeView1.Nodes[1];
+            treeNode = FindNode(allSchemesNode, schemeName);
 
-            while (foundScheme == null && index < allSchemesNode.Nodes.Count)
+            if (treeNode != null)
             {
-                if (allSchemesNode.Nodes[index].Text == schemeName)
-                {
-                    foundScheme = allSchemesNode.Nodes[index];
-                }
-
-                index++;
-            }
-
-            if ( foundScheme != null )
-            {
-                treeView1.SelectedNode = foundScheme;
+                userControlScheme1.SetPreview(comboBoxFontFace, comboBoxFontSize);
+                treeView1.SelectedNode = treeNode;
             }
         }
 
@@ -1063,7 +1070,7 @@ namespace Windows_Terminal_Customizer
             {
                 e.Effect = DragDropEffects.Move;
             }
-            else if (treeView1.SelectedNode.Equals(schemeNode))
+            else if (treeView1.SelectedNode != null && treeView1.SelectedNode.Equals(schemeNode))
             {
                 // Special condition to see if we're trying to drag to last Profiles slot
                 e.Effect = DragDropEffects.Move;
@@ -1085,7 +1092,7 @@ namespace Windows_Terminal_Customizer
             // Retrieve the node that was dragged.  
             TreeNode draggedNode = (TreeNode)e.Data.GetData(typeof(TreeNode));
 
-            if (!draggedNode.Equals(targetNode))
+            if (draggedNode != null && !draggedNode.Equals(targetNode))
             {
                 // Move is the only effect currently used
                 if (e.Effect == DragDropEffects.Move)
@@ -1288,6 +1295,61 @@ namespace Windows_Terminal_Customizer
 
             tn = FindNode(allSchemesNode, schemeName);
             treeView1.SelectedNode = tn;
+        }
+
+        public void SetComboBoxDataSource(ComboBox comboBox, List<string> items)
+        {
+            Tuple<string, string> source;
+            var dataSource = new List<Source>();
+
+            foreach (string s in items)
+            {
+                source = GetComboBoxItem(s);
+                dataSource.Add(new Source() { Name = source.Item1, Value = source.Item2 });
+            }
+
+            comboBox.DataSource = dataSource;
+            comboBox.DisplayMember = "Name";
+            comboBox.ValueMember = "Value";
+        }
+
+        private Tuple<string, string> GetComboBoxItem(string s)
+        {
+            string name;
+            string value;
+            string[] words;
+            Tuple<string, string> myTuple;
+
+            words = s.Split('|');
+
+            if ( words.Length == 2)
+            {
+                name = words[0];
+                value = words[1];
+            }
+            else
+            {
+                name = value = s;
+            }
+
+            myTuple = new Tuple<string, string>(name, value);
+
+            return (myTuple);
+        }
+
+        public string GetSelectedComboBoxItemString(ComboBox cb)
+        {
+            return (cb.SelectedValue.ToString() == DefaultComboBoxValue) ? null : cb.SelectedValue.ToString();
+        }
+
+        public int? GetSelectedComboBoxItemInt(ComboBox cb)
+        {
+            if (cb.SelectedValue.ToString() == DefaultComboBoxValue)
+            {
+                return null;
+            }
+
+            return System.Convert.ToInt32(cb.SelectedValue.ToString());
         }
     }
 

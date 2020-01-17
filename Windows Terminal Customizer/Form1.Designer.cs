@@ -206,10 +206,6 @@
             // splitContainer1.Panel1
             // 
             this.splitContainer1.Panel1.Controls.Add(this.treeView1);
-            // 
-            // splitContainer1.Panel2
-            // 
-            this.splitContainer1.Panel2.AutoScroll = true;
             this.splitContainer1.Size = new System.Drawing.Size(695, 890);
             this.splitContainer1.SplitterDistance = 200;
             this.splitContainer1.TabIndex = 2;
@@ -376,8 +372,9 @@
             this.userControlProfile1.AutoSize = true;
             this.userControlProfile1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.userControlProfile1.Location = new System.Drawing.Point(0, 0);
+            this.userControlProfile1.MinimumSize = new System.Drawing.Size(875, 2);
             this.userControlProfile1.Name = "userControlProfile1";
-            this.userControlProfile1.Size = new System.Drawing.Size(483, 498);
+            this.userControlProfile1.Size = new System.Drawing.Size(875, 498);
             this.userControlProfile1.TabIndex = 0;
             // 
             // Form1

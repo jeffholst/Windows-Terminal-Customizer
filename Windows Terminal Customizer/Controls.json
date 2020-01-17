@@ -1,0 +1,35 @@
+{
+  "profile": {
+    "fontFaces": [
+      "Default|Consolas",
+      "Cascadia Mono",
+      "Consolas",
+      "Dec Terminal Modern",
+      "Envy Code R",
+      "Fantasque Sans Mono",
+      "Fira Code|Fira Code",
+      "Hack",
+      "Inconsolata",
+      "InputMono",
+      "Iosevka",
+      "Monoid",
+      "Roboto Mono",
+      "Ubuntu Mono"
+    ],
+    "fontSizes": [
+      "Default|<Default>",
+      "8",
+      "10",
+      "12",
+      "14",
+      "16",
+      "18",
+      "20",
+      "22",
+      "24",
+      "26",
+      "28"
+
+    ]
+  }
+}
