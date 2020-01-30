@@ -39,6 +39,7 @@
             treeNode3,
             treeNode4});
             System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("All Schemes");
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.menuFile = new System.Windows.Forms.ToolStripMenuItem();
             this.menuFileOpen = new System.Windows.Forms.ToolStripMenuItem();
@@ -385,6 +386,7 @@
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.menuStrip1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
             this.Text = "Windows Terminal Customizer";

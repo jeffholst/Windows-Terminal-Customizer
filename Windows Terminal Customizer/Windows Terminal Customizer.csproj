@@ -49,6 +49,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>favicon.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -82,6 +85,13 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Settings.cs" />
+    <Compile Include="Startup.cs" />
+    <Compile Include="StartupForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="StartupForm.Designer.cs">
+      <DependentUpon>StartupForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="UserControlDefault.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -131,6 +141,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="StartupForm.resx">
+      <DependentUpon>StartupForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UserControlDefault.resx">
       <DependentUpon>UserControlDefault.cs</DependentUpon>
     </EmbeddedResource>
@@ -152,6 +165,7 @@
     <None Include="Controls.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Images\windows-terminal-customizer-icon.psd" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -821,7 +835,19 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="favicon.ico" />
+    <Content Include="Images\favicon.ico" />
+    <Content Include="Images\windows-terminal-customizer-icon-128.png" />
+    <Content Include="Images\windows-terminal-customizer-icon-256.png" />
+    <Content Include="Images\windows-terminal-customizer-icon-512.png" />
+    <Content Include="Images\windows-terminal-customizer-icon.png" />
     <Content Include="Images\wt_32.ico" />
+    <Content Include="Preview Files\PreviewCSharp.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Preview Files\PreviewHTML.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

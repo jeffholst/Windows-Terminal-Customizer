@@ -1,0 +1,79 @@
+<!doctype html>
+<html class="no-js" lang="">
+  <head>
+    <style>
+        .body-style {
+            background-color: [REPLACE_BACKGROUND];
+            color: [REPLACE_RED];
+            
+        }
+        .inner-pre-style {
+            font-size: [REPLACE_FONTSIZE];
+            font-family: [REPLACE_FONT];
+        }
+        .tag {
+            color: [REPLACE_RED];
+        }
+        .attr {
+            color: [REPLACE_GREEN];
+        }
+        .attr-val {
+            color: [REPLACE_YELLOW];
+        }
+        .comment {
+            color: [REPLACE_BLUE];
+        }
+        .text {
+            color: [REPLACE_WHITE];
+        }
+    </style>
+  </head>
+  <body class="body-style">
+    <pre>
+        <span class="inner-pre-style">
+&lt;!<span class='tag'>doctype</span> <span class="attr">html</span>&gt;
+&lt;<span class='tag'>html</span> <span class="attr">class</span>=<span class="attr-val">"no-js"</span> <span class="attr">lang</span>=<span class="attr-val">""</span>&gt;
+
+&lt;<span class='tag'>head</span>&gt;
+  &lt;<span class='tag'>meta</span> <span class="attr">charset</span>=<span class="attr-val">"utf-8"</span>&gt;
+  &lt;<span class='tag'>title</span>&gt;&lt;/<span class='tag'>title</span>&gt;
+  &lt;<span class='tag'>meta</span> <span class="attr">name</span>=<span class="attr-val">"description"</span> <span class="attr">content</span>=<span class="attr-val">""</span>&gt;
+  &lt;<span class='tag'>meta</span> <span class="attr">name</span>=<span class="attr-val">"viewport"</span> <span class="attr">content</span>=<span class="attr-val">"width=device-width, initial-scale=1"</span>&gt;
+
+  &lt;<span class='tag'>link</span> <span class="attr">rel</span>=<span class="attr-val">"manifest"</span> <span class="attr">href</span>=<span class="attr-val">"site.webmanifest"</span>&gt;
+  &lt;<span class='tag'>link</span> <span class="attr">rel</span>=<span class="attr-val">"apple-touch-icon"</span> <span class="attr">href</span>=<span class="attr-val">"icon.png"</span>&gt;
+  <span class='comment'>&lt;!-- Place favicon.ico in the root directory --&gt;</span>
+
+  &lt;link <span class="attr">rel</span>=<span class="attr-val">"stylesheet"</span> <span class="attr">href</span>=<span class="attr-val">"css/normalize.css"</span>&gt;
+  &lt;link <span class="attr">rel</span>=<span class="attr-val">"stylesheet"</span> <span class="attr">href</span>=<span class="attr-val">"css/main.css"</span>&gt;
+
+  &lt;<span class='tag'>meta</span> <span class="attr">name</span>=<span class="attr-val">"theme-color"</span> <span class="attr">content</span>=<span class="attr-val">"#fafafa"</span>&gt;
+&lt;/<span class='tag'>head</span>&gt;
+
+&lt;<span class='tag'>body</span>&gt;
+  <span class='comment'>&lt;!--[if IE]&gt;
+    &lt;p class="browserupgrade"&gt;You are using an &lt;strong&gt;outdated&lt;/strong&gt; browser.
+     Please &lt;a href="https://browsehappy.com/"&gt;upgrade your browser.&lt;/p&gt;
+  &lt;![endif]--&gt;
+
+  &lt;!-- Add your site or application content here --&gt;</span>
+  &lt;<span class='tag'>p</span>&gt;<span class="text">Hello world! This is HTML5 Boilerplate.</span>&lt;/<span class='tag'>p</span>&gt;
+  &lt;<span class='tag'>script</span> <span class="attr">src</span>=<span class="attr-val">"js/vendor/modernizr-3.8.0.min.js"</span>&gt;&lt;/<span class='tag'>script</span>&gt;
+  &lt;<span class='tag'>script</span> <span class="attr">src</span>=<span class="attr-val">"https://code.jquery.com/jquery-3.4.1.min.js"</span> integrity=<span class="attr-val">"sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="</span> crossorigin=<span class="attr-val">"anonymous"</span>&gt;&lt;/<span class='tag'>script</span>&gt;
+  &lt;<span class='tag'>script</span>&gt;<span class="attr">window</span>.<span class="attr">jQuery</span> || <span class="attr">document</span>.write(<span class="attr-val">'&lt;script src="js/vendor/jquery-3.4.1.min.js"&gt;&lt;\/script&gt;'</span>)&lt;/<span class='tag'>script</span>&gt;
+  &lt;<span class='tag'>script</span> <span class="attr">src</span>=<span class="attr-val">"js/plugins.js"</span>&gt;&lt;/<span class='tag'>script</span>&gt;
+  &lt;<span class='tag'>script</span> <span class="attr">src</span>=<span class="attr-val">"js/main.js"</span>&gt;&lt;/<span class='tag'>script</span>&gt;
+
+  <span class='comment'>&lt;!-- Google Analytics: change UA-XXXXX-Y to be your site's ID. --&gt;</span>
+  &lt;<span class='tag'>script</span>&gt;
+    <span class="attr">window</span>.ga = <span class='tag'>function</span> () { <span class="attr">ga</span>.<span class="attr">q</span>.push(<span class='tag'>arguments</span>) }; <span class="attr">ga</span>.<span class="attr">q</span> = []; <span class="attr">ga</span>.<span class="attr">l</span> = +<span class='tag'>new</span> Date;
+    ga(<span class="attr-val">'create'</span>, <span class="attr-val">'UA-XXXXX-Y'</span>, <span class="attr-val">'auto'</span>); ga(<span class="attr-val">'set'</span>,<span class="attr-val">'transport'</span>,<span class="attr-val">'beacon'</span>); ga(<span class="attr-val">'send'</span>, <span class="attr-val">'pageview'</span>)
+  &lt;/<span class='tag'>script</span>&gt;
+  &lt;<span class='tag'>script</span> <span class="attr">src</span>=<span class="attr-val">"https://www.google-analytics.com/analytics.js"</span> <span class="attr">async</span>&gt;&lt;/<span class='tag'>script</span>&gt;
+&lt;/<span class='tag'>body</span>&gt;
+
+&lt;/<span class='tag'>html</span>&gt;
+        </span>
+    </pre>
+  </body>
+</html>

@@ -26,6 +26,7 @@ namespace Windows_Terminal_Customizer
         bool populating = false;
         ControlGrouping activeControl;
         Dictionary<SchemeColors, ControlGrouping> myControlGrouping;
+        Dictionary<string, StringBuilder> previews = new Dictionary<string, StringBuilder>();
 
         public UserControlScheme()
         {
@@ -42,7 +43,7 @@ namespace Windows_Terminal_Customizer
             InitializeSchemeColors();
             _parent.SetComboBoxDataSource(comboBoxSize, _controls.profile.fontSizes);
             _parent.SetComboBoxDataSource(comboBoxFont, _controls.profile.fontFaces);
-            _parent.SetComboBoxDataSource(comboBoxStyle, new List<string>() { "Palette|100", "Lorem ipsum|200", "Code|300", "All Characters|400" });
+            _parent.SetComboBoxDataSource(comboBoxStyle, new List<string>() { "Palette|100", "C#|PreviewCSharp.html", "HTML|PreviewHTML.html", "Lorem ipsum|200", "Code|300", "All Characters|400" });
             comboBoxStyle.SelectedValue = "100";
 
             populating = false;
@@ -698,6 +699,51 @@ namespace Windows_Terminal_Customizer
             }
         }
 
+        private void LoadPreviewFile(string key)
+        {
+            String path;
+            string fileContent;
+            StringBuilder mySB;
+
+            path = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "Preview Files", key);
+
+            using (StreamReader sr = new StreamReader(path))
+            {
+                //This allows you to do one Read operation.
+                fileContent = sr.ReadToEnd();
+            }
+
+            mySB = new StringBuilder();
+            mySB.Append(fileContent);
+
+            previews.Add(key, mySB);
+        }
+
+        private void Preview(string key)
+        {
+            StringBuilder html;
+            string replaceString;
+
+            if (!previews.ContainsKey(key))
+            {
+                LoadPreviewFile(key);
+            }
+
+            html = new StringBuilder();
+            html.Append(previews[key].ToString());
+
+            html.Replace("[REPLACE_FONTSIZE]", string.Format("{0}px", comboBoxSize.SelectedValue.ToString()));
+            html.Replace("[REPLACE_FONT]", comboBoxFont.SelectedValue.ToString());
+
+            foreach (KeyValuePair<SchemeColors, ControlGrouping> control in myControlGrouping)
+            {
+                replaceString = string.Format("[REPLACE_{0}]", control.Key.ToString().ToUpper());
+                html.Replace(replaceString, control.Value.textBox.Text);
+            }
+
+            webBrowser1.DocumentText = html.ToString();
+        }
+
         private string GetRandomColor(Random random)
         {
             int count;
@@ -1029,8 +1075,16 @@ namespace Windows_Terminal_Customizer
 
         private void UpdatePreview()
         {
-            switch (comboBoxStyle.SelectedValue.ToString())
+            string key;
+
+            key = comboBoxStyle.SelectedValue.ToString();
+
+            switch (key)
             {
+                case "PreviewCSharp.html":
+                case "PreviewHTML.html":
+                    Preview(key);
+                    break;
                 case "100":
                     PreviewPalette();
                     break;

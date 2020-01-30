@@ -25,7 +25,7 @@ namespace Windows_Terminal_Customizer
             InitializeComponent(); 
         }
 
-        public void Setup(Form1 parent, Controls controls)
+        public void Setup(Form1 parent, Controls controls, Startup startup)
         {
             _parent = parent;
             _controls = controls;
@@ -33,9 +33,13 @@ namespace Windows_Terminal_Customizer
             populating = true;
 
             PopulateCommandlineCombo();
+            startup.Next();
             PopulateBackgroundImageAlignment();
+            startup.Next();
             PopulateBackgroundImageStretchMode();
+            startup.Next();
             PopulateRotationSchedule();
+            startup.Next();
             _parent.SetComboBoxDataSource(comboBoxFontFace, _controls.profile.fontFaces);
             _parent.SetComboBoxDataSource(comboBoxFontSize, _controls.profile.fontSizes);
 

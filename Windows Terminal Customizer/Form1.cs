@@ -40,12 +40,16 @@ namespace Windows_Terminal_Customizer
         private Controls controls;
         public string DefaultComboBoxValue = "<Default>";
 
-        private delegate void SafeCallDelegate(TreeNodeCollection nodes, string schemeName);
+        private delegate void SafeCallDelegate(TreeNode node, string schemeName);
         private delegate void SafeCallDelegateRemoveNode(TreeNodeCollection nodes, TreeNode node);
 
         public Form1()
         {
+            Startup startup = new Startup();
+            startup.Start();
+
             InitializeComponent();
+            
             // These could also go in Forms2.Designer.cs
             this.splitContainer1.Panel2.Controls.Add(this.userControlSettings1);
             this.splitContainer1.Panel2.Controls.Add(this.userControlHelp1);
@@ -53,10 +57,13 @@ namespace Windows_Terminal_Customizer
             this.splitContainer1.Panel2.Controls.Add(this.userControlScheme1);
             this.splitContainer1.Panel2.Controls.Add(this.userControlProfile1);
             this.splitContainer1.Panel2.Controls.Add(this.userControlDefault1);
-            Setup();
+
+            Setup(startup);
+
+            startup.Stop();
         }
 
-        private void Setup()
+        private void Setup(Startup startup)
         {
             string lastFile;
 
@@ -66,6 +73,7 @@ namespace Windows_Terminal_Customizer
             debug = GetTrueOrFalseAppSetting("Debug", false);
 
             controls = ReadControls();
+            startup.Next();
 
             LogIt("Application Started");
             LogIt(string.Format("Debug set to {0}", debug));
@@ -86,20 +94,27 @@ namespace Windows_Terminal_Customizer
                 fileName = lastFile;
                 OpenFile();
             }
+            startup.Next();
 
             schemesFolder = ConfigurationManager.AppSettings["SchemesFolder"];
             windowsTerminalFolder = ConfigurationManager.AppSettings["WindowsTerminalFolder"];
             windowsTerminalEXE = ConfigurationManager.AppSettings["WindowsTerminalEXE"];
+            
             removeUnusedSchemes = GetTrueOrFalseAppSetting("RemoveUnusedSchemes", true);
 
             userControlDefault1.Setup(this);
+            startup.Next();
             userControlSettings1.Setup(this, schemesFolder, windowsTerminalFolder, windowsTerminalEXE, removeUnusedSchemes);
-            userControlProfile1.Setup(this, controls);
+            startup.Next();
+            userControlProfile1.Setup(this, controls, startup);
+            startup.Next();
             userControlScheme1.Setup(this, controls);
+            startup.Next();
 
             myCustomProfile = LoadCustomProfile();
+            startup.Next();
             DoAllReconciliation();
-
+            startup.Next();
             myTimer = new CustomizerTimer(this, userControlProfile1);
 
             writeToFileTimer = new Timer();
@@ -251,11 +266,8 @@ namespace Windows_Terminal_Customizer
 
             foreach (Scheme scheme in settings.schemes)
             {
-                schemeNode.Nodes.Add(scheme.name);
+                InsertNodeAlphabetically(schemeNode, scheme.name, null);
             }
-
-            treeView1.TreeViewNodeSorter = new NodeSorter(schemeNode);
-            treeView1.Sort();
 
             keyBindNode = treeView1.Nodes[0].Nodes[3];    // KeyBindings
 
@@ -267,6 +279,35 @@ namespace Windows_Terminal_Customizer
             }
 
             allSchemesNode = treeView1.Nodes[1];
+        }
+
+        private void InsertNodeAlphabetically(TreeNode node, string newNodeText, object tag)
+        {
+            int index;
+            bool doInsert;
+            TreeNode newNode;
+
+            index = 0;
+            doInsert = false;
+
+            while (index < node.Nodes.Count && !doInsert)
+            {
+                if (string.Compare(node.Nodes[index].Text, newNodeText) == 1)
+                {
+                    doInsert = true;
+                    break;
+                }
+
+                index++;
+            }
+
+            newNode = new TreeNode(newNodeText);
+            if (tag != null)
+            {
+                newNode.Tag = tag;
+            }
+
+            node.Nodes.Insert(index, newNode);
         }
 
         private void TreeViewNodeClicked()
@@ -450,7 +491,7 @@ namespace Windows_Terminal_Customizer
             {
                 if (!SchemeNodeExists(profile.colorScheme))
                 {
-                    AddSchemeNode(schemeNode.Nodes, profile.colorScheme);
+                    AddSchemeNode(schemeNode, profile.colorScheme);
                     scheme = FindSchemeFromAllSchemesNode(profile.colorScheme);
 
                     if (!settings.schemes.Contains(scheme))
@@ -469,22 +510,16 @@ namespace Windows_Terminal_Customizer
             
         }
 
-        private void AddSchemeNode(TreeNodeCollection nodes, string schemeName)
+        private void AddSchemeNode(TreeNode node, string schemeName)
         {
             if (treeView1.InvokeRequired)
             {
                 var d = new SafeCallDelegate(AddSchemeNode);
-                treeView1.Invoke(d, new object[] { nodes, schemeName });
+                treeView1.Invoke(d, new object[] { node, schemeName });
             }
             else
             {
-                nodes.Add(schemeName);
-
-                var tn = treeView1.TopNode;
-                treeView1.TreeViewNodeSorter = new NodeSorter(schemeNode);
-                treeView1.Sort();
-
-                treeView1.TopNode = tn;
+                InsertNodeAlphabetically(node, schemeName, null);
             }
         }
 
@@ -555,7 +590,6 @@ namespace Windows_Terminal_Customizer
         public void  addSchemeFile(string fileName)
         {
             Scheme scheme;
-            TreeNode newNode;
 
             using (StreamReader file = File.OpenText(fileName))
             {
@@ -564,11 +598,8 @@ namespace Windows_Terminal_Customizer
                 settings.schemes.Add(scheme);
             }
 
-            newNode = new TreeNode(scheme.name);
-            newNode.Tag = scheme;
-            allSchemesNode.Nodes.Add(newNode);
-            treeView1.TreeViewNodeSorter = new NodeSorter(allSchemesNode);
-            treeView1.Sort();
+            InsertNodeAlphabetically(allSchemesNode, scheme.name, scheme);
+
             userControlProfile1.UpdateSchemes(allSchemesNode);
         }
 

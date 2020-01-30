@@ -94,6 +94,7 @@
             this.buttonReset = new System.Windows.Forms.Button();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.webBrowser1 = new System.Windows.Forms.WebBrowser();
             this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
             this.comboBoxStyle = new System.Windows.Forms.ComboBox();
             this.label4 = new System.Windows.Forms.Label();
@@ -101,7 +102,6 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.comboBoxFont = new System.Windows.Forms.ComboBox();
-            this.webBrowser1 = new System.Windows.Forms.WebBrowser();
             this.groupBox1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
@@ -835,14 +835,27 @@
             this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox2.Controls.Add(this.tableLayoutPanel3);
             this.groupBox2.Controls.Add(this.webBrowser1);
+            this.groupBox2.Controls.Add(this.tableLayoutPanel3);
             this.groupBox2.Location = new System.Drawing.Point(19, 348);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(461, 543);
             this.groupBox2.TabIndex = 59;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Preview";
+            // 
+            // webBrowser1
+            // 
+            this.webBrowser1.AllowWebBrowserDrop = false;
+            this.webBrowser1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.webBrowser1.CausesValidation = false;
+            this.webBrowser1.Location = new System.Drawing.Point(16, 53);
+            this.webBrowser1.MinimumSize = new System.Drawing.Size(20, 20);
+            this.webBrowser1.Name = "webBrowser1";
+            this.webBrowser1.Size = new System.Drawing.Size(427, 484);
+            this.webBrowser1.TabIndex = 62;
             // 
             // tableLayoutPanel3
             // 
@@ -927,18 +940,6 @@
             this.comboBoxFont.Size = new System.Drawing.Size(118, 21);
             this.comboBoxFont.TabIndex = 2;
             this.comboBoxFont.SelectedValueChanged += new System.EventHandler(this.comboBoxFont_SelectedValueChanged);
-            // 
-            // webBrowser1
-            // 
-            this.webBrowser1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.webBrowser1.Location = new System.Drawing.Point(16, 53);
-            this.webBrowser1.MinimumSize = new System.Drawing.Size(20, 20);
-            this.webBrowser1.Name = "webBrowser1";
-            this.webBrowser1.ScrollBarsEnabled = false;
-            this.webBrowser1.Size = new System.Drawing.Size(430, 484);
-            this.webBrowser1.TabIndex = 60;
             // 
             // UserControlScheme
             // 
@@ -1036,8 +1037,8 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.ComboBox comboBoxFont;
-        private System.Windows.Forms.WebBrowser webBrowser1;
         private System.Windows.Forms.ComboBox comboBoxStyle;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.WebBrowser webBrowser1;
     }
 }
