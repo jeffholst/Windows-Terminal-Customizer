@@ -1,0 +1,462 @@
+{
+  "languages": [
+    {
+      "name": "csharp",
+      "tokens": [
+        {
+          "name": "comment",
+          "color": "Foreground"
+        },
+        {
+          "name": "string",
+          "color": "Foreground"
+        },
+        {
+          "name": "class-name",
+          "color": "Foreground"
+        },
+        {
+          "name": "keyword",
+          "color": "Foreground"
+        },
+        {
+          "name": "boolean",
+          "color": "Foreground"
+        },
+        {
+          "name": "function",
+          "color": "Foreground"
+        },
+        {
+          "name": "number",
+          "color": "Foreground"
+        },
+        {
+          "name": "operator",
+          "color": "Foreground"
+        },
+        {
+          "name": "punctuation",
+          "color": "Foreground"
+        }
+      ]
+    },
+    {
+      "name": "css",
+      "tokens": [
+        {
+          "name": "comment",
+          "color": "Foreground"
+        },
+        {
+          "name": "atrule",
+          "color": "Foreground"
+        },
+        {
+          "name": "url",
+          "color": "Foreground"
+        },
+        {
+          "name": "selector",
+          "color": "Foreground"
+        },
+        {
+          "name": "string",
+          "color": "Foreground"
+        },
+        {
+          "name": "property",
+          "color": "Foreground"
+        },
+        {
+          "name": "important",
+          "color": "Foreground"
+        },
+        {
+          "name": "function",
+          "color": "Foreground"
+        },
+        {
+          "name": "punctuation",
+          "color": "Foreground"
+        }
+      ]
+    },
+    {
+      "name": "graphql",
+      "tokens": [
+        {
+          "name": "comment",
+          "color": "Foreground"
+        },
+        {
+          "name": "string",
+          "color": "Foreground"
+        },
+        {
+          "name": "number",
+          "color": "Foreground"
+        },
+        {
+          "name": "boolean",
+          "color": "Foreground"
+        },
+        {
+          "name": "variable",
+          "color": "Foreground"
+        },
+        {
+          "name": "attr-name",
+          "color": "Foreground"
+        },
+        {
+          "name": "class-name",
+          "color": "Foreground"
+        },
+        {
+          "name": "keyword",
+          "color": "Foreground"
+        },
+        {
+          "name": "operator",
+          "color": "Foreground"
+        },
+        {
+          "name": "punctuation",
+          "color": "Foreground"
+        },
+        {
+          "name": "constant",
+          "color": "Foreground"
+        }
+      ]
+    },
+    {
+      "name": "html",
+      "tokens": [
+        {
+          "name": "comment",
+          "color": "Foreground"
+        },
+        {
+          "name": "prolog",
+          "color": "Foreground"
+        },
+        {
+          "name": "doctype",
+          "color": "Foreground"
+        },
+        {
+          "name": "style",
+          "color": "Foreground"
+        },
+        {
+          "name": "script",
+          "color": "Foreground"
+        },
+        {
+          "name": "cdata",
+          "color": "Foreground"
+        },
+        {
+          "name": "tag",
+          "color": "Foreground"
+        },
+        {
+          "name": "entity",
+          "color": "Foreground"
+        }
+      ]
+    },
+    {
+      "name": "java",
+      "tokens": [
+        {
+          "name": "comment",
+          "color": "Foreground"
+        },
+        {
+          "name": "string",
+          "color": "Foreground"
+        },
+        {
+          "name": "namespace",
+          "color": "Foreground"
+        },
+        {
+          "name": "generics",
+          "color": "Foreground"
+        },
+        {
+          "name": "class-name",
+          "color": "Foreground"
+        },
+        {
+          "name": "keyword",
+          "color": "Foreground"
+        },
+        {
+          "name": "boolean",
+          "color": "Foreground"
+        },
+        {
+          "name": "function",
+          "color": "Foreground"
+        },
+        {
+          "name": "number",
+          "color": "Foreground"
+        },
+        {
+          "name": "operator",
+          "color": "Foreground"
+        },
+        {
+          "name": "punctuation",
+          "color": "Foreground"
+        }
+      ]
+    },
+    {
+      "name": "javascript",
+      "tokens": [
+        {
+          "name": "comment",
+          "color": "Foreground"
+        },
+        {
+          "name": "template-string",
+          "color": "Foreground"
+        },
+        {
+          "name": "string",
+          "color": "Foreground"
+        },
+        {
+          "name": "class-name",
+          "color": "Foreground"
+        },
+        {
+          "name": "regex",
+          "color": "Foreground"
+        },
+        {
+          "name": "parameter",
+          "color": "Foreground"
+        },
+        {
+          "name": "constant",
+          "color": "Foreground"
+        },
+        {
+          "name": "keyword",
+          "color": "Foreground"
+        },
+        {
+          "name": "boolean",
+          "color": "Foreground"
+        },
+        {
+          "name": "function",
+          "color": "Foreground"
+        },
+        {
+          "name": "number",
+          "color": "Foreground"
+        },
+        {
+          "name": "operator",
+          "color": "Foreground"
+        },
+        {
+          "name": "punctuation",
+          "color": "Foreground"
+        }
+      ]
+    },
+    {
+      "name": "json",
+      "tokens": [
+        {
+          "name": "property",
+          "color": "Foreground"
+        },
+        {
+          "name": "string",
+          "color": "Foreground"
+        },
+        {
+          "name": "comment",
+          "color": "Foreground"
+        },
+        {
+          "name": "number",
+          "color": "Foreground"
+        },
+        {
+          "name": "punctuation",
+          "color": "Foreground"
+        },
+        {
+          "name": "operator",
+          "color": "Foreground"
+        },
+        {
+          "name": "boolean",
+          "color": "Foreground"
+        }
+      ]
+    },
+    {
+      "name": "php",
+      "tokens": [
+        {
+          "name": "comment",
+          "color": "Foreground"
+        },
+        {
+          "name": "class-name",
+          "color": "Foreground"
+        },
+        {
+          "name": "variable",
+          "color": "Foreground"
+        },
+        {
+          "name": "package",
+          "color": "Foreground"
+        },
+        {
+          "name": "keyword",
+          "color": "Foreground"
+        },
+        {
+          "name": "function",
+          "color": "Foreground"
+        },
+        {
+          "name": "number",
+          "color": "Foreground"
+        },
+        {
+          "name": "property",
+          "color": "Foreground"
+        },
+        {
+          "name": "operator",
+          "color": "Foreground"
+        },
+        {
+          "name": "punctuation",
+          "color": "Foreground"
+        },
+        {
+          "name": "constant",
+          "color": "Foreground"
+        }
+      ]
+    },
+    {
+      "name": "sql",
+      "tokens": [
+        {
+          "name": "comment",
+          "color": "Foreground"
+        },
+        {
+          "name": "variable",
+          "color": "Foreground"
+        },
+        {
+          "name": "string",
+          "color": "Foreground"
+        },
+        {
+          "name": "function",
+          "color": "Foreground"
+        },
+        {
+          "name": "keyword",
+          "color": "Foreground"
+        },
+        {
+          "name": "boolean",
+          "color": "Foreground"
+        },
+        {
+          "name": "number",
+          "color": "Foreground"
+        },
+        {
+          "name": "operator",
+          "color": "Foreground"
+        },
+        {
+          "name": "punctuation",
+          "color": "Foreground"
+        }
+      ]
+    },
+    {
+      "name": "typescript",
+      "tokens": [
+        {
+          "name": "comment",
+          "color": "Foreground"
+        },
+        {
+          "name": "template-string",
+          "color": "Foreground"
+        },
+        {
+          "name": "string",
+          "color": "Foreground"
+        },
+        {
+          "name": "class-name",
+          "color": "Foreground"
+        },
+        {
+          "name": "regex",
+          "color": "Foreground"
+        },
+        {
+          "name": "parameter",
+          "color": "Foreground"
+        },
+        {
+          "name": "constant",
+          "color": "Foreground"
+        },
+        {
+          "name": "keyword",
+          "color": "Foreground"
+        },
+        {
+          "name": "boolean",
+          "color": "Foreground"
+        },
+        {
+          "name": "function",
+          "color": "Foreground"
+        },
+        {
+          "name": "number",
+          "color": "Foreground"
+        },
+        {
+          "name": "operator",
+          "color": "Foreground"
+        },
+        {
+          "name": "punctuation",
+          "color": "Foreground"
+        },
+        {
+          "name": "builtin",
+          "color": "Foreground"
+        }
+      ]
+    }
+  ]
+}

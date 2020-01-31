@@ -15,5 +15,6 @@ namespace Windows_Terminal_Customizer
     {
         public List<string> fontFaces { get; set; }
         public List<string> fontSizes { get; set; }
+        public List<string> previews { get; set; }
     }
 }

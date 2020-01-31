@@ -45,6 +45,7 @@ namespace Windows_Terminal_Customizer
         public void Next()
         {
             string message;
+            int progressBarValue;
 
             if (_messageCounter < _messages.Count())
             {
@@ -56,6 +57,12 @@ namespace Windows_Terminal_Customizer
             }
 
             _startupForm.UpdateMessage(message);
+
+            progressBarValue = _messageCounter * (100 / _messages.Count);
+
+            if (progressBarValue > 100) progressBarValue = 100;
+
+            _startupForm.UpdateProgressBar(progressBarValue);
 
             _messageCounter++;
         }

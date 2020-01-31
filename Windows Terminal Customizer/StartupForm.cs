@@ -22,5 +22,11 @@ namespace Windows_Terminal_Customizer
             labelMessage.Text = message;
             labelMessage.Refresh();
         }
+
+        public void UpdateProgressBar(int value)
+        {
+            progressBar1.Value = value;
+            progressBar1.Refresh();
+        }
     }
 }

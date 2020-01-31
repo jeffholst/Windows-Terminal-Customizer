@@ -18,13 +18,20 @@ namespace Windows_Terminal_Customizer
 
     public partial class UserControlScheme : UserControl
     {
+        StringBuilder _previewJavascriptFile = null;
+        StringBuilder _previewCSSFile = null;
+        StringBuilder _previewHTMLFile = null;
+        
         Form1 _parent;
         Scheme scheme;
+        Syntax _syntax;
         TreeNode treeNode;
         Controls _controls;
         Scheme savedScheme;
+        string _currentPreview;
         bool populating = false;
         ControlGrouping activeControl;
+        bool populatingComboBoxToken = false;
         Dictionary<SchemeColors, ControlGrouping> myControlGrouping;
         Dictionary<string, StringBuilder> previews = new Dictionary<string, StringBuilder>();
 
@@ -33,44 +40,47 @@ namespace Windows_Terminal_Customizer
             InitializeComponent();
         }
 
-        public void Setup(Form1 parent, Controls controls)
+        public void Setup(Form1 parent, Controls controls, Syntax syntax)
         {
             _parent = parent;
             _controls = controls;
+            _syntax = syntax;
+            _currentPreview = "palette";
 
             populating = true;
 
             InitializeSchemeColors();
             _parent.SetComboBoxDataSource(comboBoxSize, _controls.profile.fontSizes);
             _parent.SetComboBoxDataSource(comboBoxFont, _controls.profile.fontFaces);
-            _parent.SetComboBoxDataSource(comboBoxStyle, new List<string>() { "Palette|100", "C#|PreviewCSharp.html", "HTML|PreviewHTML.html", "Lorem ipsum|200", "Code|300", "All Characters|400" });
-            comboBoxStyle.SelectedValue = "100";
+            _parent.SetComboBoxDataSource(comboBoxPreview, _controls.profile.previews);
 
             populating = false;
+
+            comboBoxPreview.SelectedValue = "palette";
         }
 
         private void InitializeSchemeColors()
         {
             myControlGrouping = new Dictionary<SchemeColors, ControlGrouping>();
 
-            myControlGrouping.Add(SchemeColors.Black, new ControlGrouping() { button = buttonBlack, label = labelBlack, textBox = textBoxBlack });
-            myControlGrouping.Add(SchemeColors.Red, new ControlGrouping() { button = buttonRed, label = labelRed, textBox = textBoxRed });
-            myControlGrouping.Add(SchemeColors.Green, new ControlGrouping() { button = buttonGreen, label = labelGreen, textBox = textBoxGreen });
-            myControlGrouping.Add(SchemeColors.Yellow, new ControlGrouping() { button = buttonYellow, label = labelYellow, textBox = textBoxYellow });
-            myControlGrouping.Add(SchemeColors.Blue, new ControlGrouping() { button = buttonBlue, label = labelBlue, textBox = textBoxBlue });
-            myControlGrouping.Add(SchemeColors.Purple, new ControlGrouping() { button = buttonPurple, label = labelPurple, textBox = textBoxPurple });
-            myControlGrouping.Add(SchemeColors.Cyan, new ControlGrouping() { button = buttonCyan, label = labelCyan, textBox = textBoxCyan });
-            myControlGrouping.Add(SchemeColors.White, new ControlGrouping() { button = buttonWhite, label = labelWhite, textBox = textBoxWhite });
-            myControlGrouping.Add(SchemeColors.BrightBlack, new ControlGrouping() { button = buttonBrightBlack, label = labelBrightBlack, textBox = textBoxBrightBlack });
-            myControlGrouping.Add(SchemeColors.BrightRed, new ControlGrouping() { button = buttonBrightRed, label = labelBrightRed, textBox = textBoxBrightRed });
-            myControlGrouping.Add(SchemeColors.BrightGreen, new ControlGrouping() { button = buttonBrightGreen, label = labelBrightGreen, textBox = textBoxBrightGreen });
-            myControlGrouping.Add(SchemeColors.BrightYellow, new ControlGrouping() { button = buttonBrightYellow, label = labelBrightYellow, textBox = textBoxBrightYellow });
-            myControlGrouping.Add(SchemeColors.BrightBlue, new ControlGrouping() { button = buttonBrightBlue, label = labelBrightBlue, textBox = textBoxBrightBlue });
-            myControlGrouping.Add(SchemeColors.BrightPurple, new ControlGrouping() { button = buttonBrightPurple, label = labelBrightPurple, textBox = textBoxBrightPurple });
-            myControlGrouping.Add(SchemeColors.BrightCyan, new ControlGrouping() { button = buttonBrightCyan, label = labelBrightCyan, textBox = textBoxBrightCyan });
-            myControlGrouping.Add(SchemeColors.BrightWhite, new ControlGrouping() { button = buttonBrightWhite, label = labelBrightWhite, textBox = textBoxBrightWhite });
-            myControlGrouping.Add(SchemeColors.Background, new ControlGrouping() { button = buttonBackground, label = labelBackground, textBox = textBoxBackground });
-            myControlGrouping.Add(SchemeColors.Foreground, new ControlGrouping() { button = buttonForeground, label = labelForeground, textBox = textBoxForeground });
+            myControlGrouping.Add(SchemeColors.Black, new ControlGrouping() { name = "Black", button = buttonBlack, linkLabel = linkLabelBlack, textBox = textBoxBlack });
+            myControlGrouping.Add(SchemeColors.Red, new ControlGrouping() { name = "Red", button = buttonRed, linkLabel = linkLabelRed, textBox = textBoxRed });
+            myControlGrouping.Add(SchemeColors.Green, new ControlGrouping() { name = "Green", button = buttonGreen, linkLabel = linkLabelGreen, textBox = textBoxGreen });
+            myControlGrouping.Add(SchemeColors.Yellow, new ControlGrouping() { name = "Yellow", button = buttonYellow, linkLabel = linkLabelYellow, textBox = textBoxYellow });
+            myControlGrouping.Add(SchemeColors.Blue, new ControlGrouping() { name = "Blue", button = buttonBlue, linkLabel = linkLabelBlue, textBox = textBoxBlue });
+            myControlGrouping.Add(SchemeColors.Purple, new ControlGrouping() { name = "Purple", button = buttonPurple, linkLabel = linkLabelPurple, textBox = textBoxPurple });
+            myControlGrouping.Add(SchemeColors.Cyan, new ControlGrouping() { name = "Cyan", button = buttonCyan, linkLabel = linkLabelCyan, textBox = textBoxCyan });
+            myControlGrouping.Add(SchemeColors.White, new ControlGrouping() { name = "White", button = buttonWhite, linkLabel = linkLabelWhite, textBox = textBoxWhite });
+            myControlGrouping.Add(SchemeColors.BrightBlack, new ControlGrouping() { name = "BrightBlack", button = buttonBrightBlack, linkLabel = linkLabelBrightBlack, textBox = textBoxBrightBlack });
+            myControlGrouping.Add(SchemeColors.BrightRed, new ControlGrouping() { name = "BrightRed", button = buttonBrightRed, linkLabel = linkLabelBrightRed, textBox = textBoxBrightRed });
+            myControlGrouping.Add(SchemeColors.BrightGreen, new ControlGrouping() { name = "BrightGreen", button = buttonBrightGreen, linkLabel = linkLabelBrightGreen, textBox = textBoxBrightGreen });
+            myControlGrouping.Add(SchemeColors.BrightYellow, new ControlGrouping() { name = "BrightYellow", button = buttonBrightYellow, linkLabel = linkLabelBrightYellow, textBox = textBoxBrightYellow });
+            myControlGrouping.Add(SchemeColors.BrightBlue, new ControlGrouping() { name = "BrightBlue", button = buttonBrightBlue, linkLabel = linkLabelBrightBlue, textBox = textBoxBrightBlue });
+            myControlGrouping.Add(SchemeColors.BrightPurple, new ControlGrouping() { name = "BrightPurple", button = buttonBrightPurple, linkLabel = linkLabelBrightPurple, textBox = textBoxBrightPurple });
+            myControlGrouping.Add(SchemeColors.BrightCyan, new ControlGrouping() { name = "BrightCyan", button = buttonBrightCyan, linkLabel = linkLabelBrightCyan, textBox = textBoxBrightCyan });
+            myControlGrouping.Add(SchemeColors.BrightWhite, new ControlGrouping() { name = "BrightWhite", button = buttonBrightWhite, linkLabel = linkLabelBrightWhite, textBox = textBoxBrightWhite });
+            myControlGrouping.Add(SchemeColors.Background, new ControlGrouping() { name = "Background", button = buttonBackground, linkLabel = linkLabelBackground, textBox = textBoxBackground });
+            myControlGrouping.Add(SchemeColors.Foreground, new ControlGrouping() { name = "Foreground", button = buttonForeground, linkLabel = linkLabelForeground, textBox = textBoxForeground });
         }
 
         public void Populate(Scheme myScheme, TreeNode selectedTreeNode)
@@ -85,7 +95,7 @@ namespace Windows_Terminal_Customizer
 
             UpdateResetButton();
             UpdateSaveButtons();
-            UpdatePreview();
+            PreviewPalette();
         }
 
         private void PopulateLocal(Scheme myScheme)
@@ -489,7 +499,7 @@ namespace Windows_Terminal_Customizer
                 _parent.schemeUpdated();
                 UpdateResetButton();
                 UpdateSaveButtons();
-                UpdatePreview();
+                UpdatePreview(_currentPreview);
             }
         }
 
@@ -679,7 +689,7 @@ namespace Windows_Terminal_Customizer
         {
             if (!populating)
             {
-                UpdatePreview();
+                UpdatePreview(_currentPreview);
             }
         }
 
@@ -687,7 +697,7 @@ namespace Windows_Terminal_Customizer
         {
             if (!populating)
             {
-                UpdatePreview();
+                UpdatePreview(_currentPreview);
             }
         }
 
@@ -695,53 +705,15 @@ namespace Windows_Terminal_Customizer
         {
             if (!populating)
             {
-                UpdatePreview();
+                UpdatePreview(_currentPreview);
             }
         }
 
-        private void LoadPreviewFile(string key)
+        private void UpdateWebPreview(string html)
         {
-            String path;
-            string fileContent;
-            StringBuilder mySB;
-
-            path = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "Preview Files", key);
-
-            using (StreamReader sr = new StreamReader(path))
-            {
-                //This allows you to do one Read operation.
-                fileContent = sr.ReadToEnd();
-            }
-
-            mySB = new StringBuilder();
-            mySB.Append(fileContent);
-
-            previews.Add(key, mySB);
-        }
-
-        private void Preview(string key)
-        {
-            StringBuilder html;
-            string replaceString;
-
-            if (!previews.ContainsKey(key))
-            {
-                LoadPreviewFile(key);
-            }
-
-            html = new StringBuilder();
-            html.Append(previews[key].ToString());
-
-            html.Replace("[REPLACE_FONTSIZE]", string.Format("{0}px", comboBoxSize.SelectedValue.ToString()));
-            html.Replace("[REPLACE_FONT]", comboBoxFont.SelectedValue.ToString());
-
-            foreach (KeyValuePair<SchemeColors, ControlGrouping> control in myControlGrouping)
-            {
-                replaceString = string.Format("[REPLACE_{0}]", control.Key.ToString().ToUpper());
-                html.Replace(replaceString, control.Value.textBox.Text);
-            }
-
-            webBrowser1.DocumentText = html.ToString();
+            webViewCompatible1.NavigateToString(html);
+            //webView1.NavigateToString(html);
+            //webBrowser1.DocumentText = html;
         }
 
         private string GetRandomColor(Random random)
@@ -802,7 +774,7 @@ namespace Windows_Terminal_Customizer
                     font-size: {1};
                     font-family: {2};
                 }}
-                </style>", textBoxBackground.Text, comboBoxSize.SelectedValue, comboBoxFont.SelectedValue);
+                </style>", textBoxBackground.Text, GetFontSize(comboBoxSize.SelectedValue.ToString()), comboBoxFont.SelectedValue);
 
             html.Append("<html>[REPLACE_STYLE]<body class='bodyStyle'>");
 
@@ -817,69 +789,7 @@ namespace Windows_Terminal_Customizer
             html.Append("</body></html>");
             html.Replace("[REPLACE_STYLE]", style);
 
-            webBrowser1.DocumentText = html.ToString();
-        }
-
-        private void PreviewCSharp()
-        {
-            string style;
-            StringBuilder html;
-
-            html = new StringBuilder();
-
-            style = string.Format(@"<style type='text/css'>
-                .bodystyle {{
-                    background-color: {0};
-                    font-size: {1};
-                    font-family: {2};
-                    color: {3};
-                }}
-                .c1 {{
-                    color: {4};
-                }}
-                .c2 {{
-                    color: {5};
-                }}
-                .c3 {{
-                    color: {6};
-                }}
-                </style>", textBoxBackground.Text, comboBoxSize.SelectedValue, comboBoxFont.SelectedValue, 
-                    textBoxForeground.Text, textBoxBlue.Text, textBoxGreen.Text, textBoxRed.Text);
-
-            html.Append("<html>[REPLACE_STYLE]<body class='bodyStyle'>");
-
-            html.Append(@"<span class=""c1"">using</span> System;<br/>
-<span class=""c1"">public class Bubble_Sort</span><br/>
-{<br/>
-&nbsp;&nbsp;&nbsp;<span class=""c1"">public static void</span> <span class=""c2"">Main</span>(<span class=""c1"">string</span>[] args)<br/>
-&nbsp;&nbsp;&nbsp;{<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class=""c1"">int</span>[] a = { <span class=""c3"">3</span>, <span class=""c3"">0</span>, <span class=""c3"">2</span>, <span class=""c3"">5</span>, <span class=""c3"">-1</span>, <span class=""c3"">4</span>, <span class=""c3"">1</span> };<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class=""c1"">int</span> t;<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Console.<span class=""c2"">WriteLine</span>(<span class=""c2"">""Original array :""</span>);<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class=""c1"">foreach</span> (<span class=""c1"">int</span> aa <span class=""c1"">in</span> a)<br/>           
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Console.<span class=""c2"">Write</span>(aa + "" "");<br/>          
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class=""c1"">for</span> (<span class=""c1"">int</span> p = <span class=""c3"">0</span>; p <= a.Length - <span class=""c3"">2</span>; p++)<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class=""c1"">for</span> (<span class=""c1"">int</span> i = <span class=""c3"">0</span>; i <= a.Length - <span class=""c3"">2</span>; i++)<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class=""c1"">if</span> (a[i] > a[i + <span class=""c3"">1</span>])<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;t = a[i + <span class=""c3"">1</span>];<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a[i + <span class=""c3"">1</span>] = a[i];<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a[i] = t;<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Console.<span class=""c2"">WriteLine</span>(<span class=""c2"">""\n""</span>+<span class=""c2"">""Sorted array :""</span>);<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class=""c1"">foreach</span> (<span class=""c1"">int</span> aa <span class=""c1"">in</span> a)<br/>             
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Console.<span class=""c2"">Write</span>(aa + "" "");<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Console.<span class=""c2"">Write</span>(<span class=""c2"">""\n""</span>);<br/>    
-&nbsp;&nbsp;&nbsp;}<br/>
-}<br/></html>");
-            html.Append("</body></html>");
-            html.Replace("[REPLACE_STYLE]", style);
-
-            webBrowser1.DocumentText = html.ToString();
+            UpdateWebPreview(html.ToString());
         }
 
         private void PreviewLorem()
@@ -897,7 +807,7 @@ namespace Windows_Terminal_Customizer
                     font-size: {1};
                     font-family: {2};
                 }}
-                </style>", textBoxBackground.Text, comboBoxSize.SelectedValue, comboBoxFont.SelectedValue);
+                </style>", textBoxBackground.Text, GetFontSize(comboBoxSize.SelectedValue.ToString()), comboBoxFont.SelectedValue);
 
             html.Append("<html>[REPLACE_STYLE]<body class='bodyStyle'>");
 
@@ -919,7 +829,7 @@ namespace Windows_Terminal_Customizer
             html.Append("</body></html>");
             html.Replace("[REPLACE_STYLE]", style);
 
-            webBrowser1.DocumentText = html.ToString();
+            UpdateWebPreview(html.ToString());
         }
 
         private void PreviewPalette()
@@ -1047,7 +957,7 @@ namespace Windows_Terminal_Customizer
                     textBoxGreen.Text,
                     textBoxYellow.Text,
                     textBoxRed.Text,
-                    comboBoxSize.SelectedValue,
+                    GetFontSize(comboBoxSize.SelectedValue.ToString()),
                     comboBoxFont.SelectedValue);
 
             table = "<table width='100%'>";
@@ -1070,42 +980,342 @@ namespace Windows_Terminal_Customizer
             html.Replace("[REPLACE_STYLE]", style);
             html.Replace("[REPLACE_TABLE]", table);
 
-            webBrowser1.DocumentText = html.ToString();
+            UpdateWebPreview(html.ToString());
         }
 
-        private void UpdatePreview()
+        private string GetCustomTokenCSS(string languageCode)
         {
-            string key;
+            string color;
+            SchemeColors sc;
+            StringBuilder css;
+            ControlGrouping cg;
+            Language myLanguage;
 
-            key = comboBoxStyle.SelectedValue.ToString();
+            css = new StringBuilder();
 
-            switch (key)
+            var results = _syntax.languages.Where(l => l.name == languageCode);
+
+            myLanguage = results.First();
+
+            foreach (Token t in myLanguage.tokens)
             {
-                case "PreviewCSharp.html":
-                case "PreviewHTML.html":
-                    Preview(key);
-                    break;
-                case "100":
-                    PreviewPalette();
-                    break;
-                case "200":
-                    PreviewLorem();
-                    break;
-                case "300":
-                    PreviewCSharp();
-                    break;
-                case "400":
-                    AllCharacters();
-                    break;
+                sc = (SchemeColors)Enum.Parse(typeof(SchemeColors), t.color);
+                cg = myControlGrouping[sc];
+
+                color = cg.textBox.Text;
+
+                css.Append(string.Format(".token.{0} {{ color: {1}; }}\r\n\r\n", t.name, color));
             }
 
+            return (css.ToString());
         }
+
+        private string GetFontSize(string fontSize)
+        {
+            int size;
+            string rval;
+
+            bool isNum = int.TryParse(fontSize, out size);
+
+            if (!isNum)
+            {
+                size = 14;
+            }
+
+            rval = string.Format("{0}px", size);
+
+            return rval;
+        }
+        private void UpdatePreviewCode(string languageCode)
+        {
+            string code;
+            string path;
+            string fileName;
+            StringBuilder localCSS;
+            StringBuilder localHTML;
+            StringBuilder localJavaScript;
+
+            path = _parent.GetPreviewFolder;
+
+            #region HTML file
+            if ( _previewHTMLFile == null )
+            {
+                fileName = Path.Combine(path, "prism.html");
+                _previewHTMLFile = new StringBuilder();
+                _previewHTMLFile.Append(File.ReadAllText(fileName));
+            }
+            #endregion
+
+            #region CSS file
+            if ( _previewCSSFile == null )
+            {
+                fileName = Path.Combine(path, "prism.css");
+                _previewCSSFile = new StringBuilder();
+                _previewCSSFile.Append(File.ReadAllText(fileName));
+            }
+            #endregion
+
+            #region JavasScript File
+            if (_previewJavascriptFile == null)
+            {
+                fileName = Path.Combine(path, "prism.js");
+                _previewJavascriptFile = new StringBuilder();
+                _previewJavascriptFile.Append(File.ReadAllText(fileName));
+            }
+            #endregion
+
+            #region Code File
+            fileName = Path.Combine(path, string.Format("{0}.html", languageCode));
+            code = File.ReadAllText(fileName);
+            #endregion
+
+            localCSS = new StringBuilder(_previewCSSFile.ToString());
+            localHTML = new StringBuilder(_previewHTMLFile.ToString());
+            localJavaScript = new StringBuilder(_previewJavascriptFile.ToString());
+
+            localCSS.Replace("[REPLACE_BACKGROUND]", textBoxBackground.Text);
+            localCSS.Replace("[REPLACE_FOREGROUND]", textBoxForeground.Text);
+            localCSS.Replace("[REPLACE_FONT]", comboBoxFont.SelectedValue.ToString());
+
+            localCSS.Replace("[REPLACE_FONTSIZE]", GetFontSize(comboBoxSize.SelectedValue.ToString()));
+            localCSS.Replace("[REPLACE_TOKENS]", GetCustomTokenCSS(languageCode));
+            localHTML.Replace("[REPLACE_CSS]", localCSS.ToString());
+            localHTML.Replace("[REPLACE_JAVASCRIPT]", localJavaScript.ToString());
+            localHTML.Replace("[REPLACE_CODE]", code);
+            localHTML.Replace("[REPLACE_LANGUAGE]", languageCode);
+
+            UpdateWebPreview(localHTML.ToString());
+        }
+
+        private void UpdatePreview(string previewType)
+        {
+            switch (previewType)
+            {
+                case "characters":
+                    AllCharacters();
+                    break;
+                case "palette":
+                    PreviewPalette();
+                    break;
+                case "lorem":
+                    PreviewLorem();
+                    break;
+                default:
+                    UpdatePreviewCode(previewType);
+                    break;
+            }
+        }
+
+        private void BuildComboBoxToken(string language)
+        {
+            bool first;
+            string activeColor;
+            Language myLanguage;
+            List<Token> sortedList;
+
+            var dataSource = new List<TokenSource>();
+            var results = _syntax.languages.Where(l => l.name == language);
+
+            populatingComboBoxToken = true;
+
+            activeColor = "";
+
+            if (results.Count() < 1)
+            {
+                // Not a programming language define in Syntax.json
+
+                dataSource.Add(new TokenSource() { Name = "Not Applicable", Value = new Token() { name = "none", color = "none" } });  
+            }
+            else
+            {
+                first = true;
+
+                myLanguage = results.First();
+
+                sortedList = myLanguage.tokens.OrderBy(o => o.name).ToList();
+
+                foreach (Token t in sortedList)
+                {
+                    dataSource.Add(new TokenSource() { Name = t.name, Value = t });
+
+                    if (first)
+                    {
+                        activeColor = t.color;
+                    }
+
+                    first = false;
+                }
+            }
+
+            comboBoxToken.DataSource = dataSource;
+            comboBoxToken.DisplayMember = "Name";
+            comboBoxToken.ValueMember = "Value";
+
+            populatingComboBoxToken = false;
+            comboBoxToken.SelectedIndex = 0;
+            SetTokenColorFromString(activeColor);
+        }
+
+        private void comboBoxPreview_SelectedValueChanged(object sender, EventArgs e)
+        {
+            if (!populating)
+            {
+                string language;
+
+                language = comboBoxPreview.SelectedValue.ToString();
+
+                _currentPreview = language;
+
+                UpdatePreview(language);
+                BuildComboBoxToken(language);
+            }   
+        }
+
+        private void SetTokenColorFromString(string colorName)
+        {
+            if (!string.IsNullOrEmpty(colorName) && System.Enum.IsDefined(typeof(SchemeColors), colorName))
+            {
+                SchemeColors sc = (SchemeColors)Enum.Parse(typeof(SchemeColors), colorName);
+
+                SetTokenColor(sc);
+            }
+            else
+            {
+                buttonTokenColor.BackColor = System.Drawing.SystemColors.Control;
+            }
+        }
+
+        private void SetTokenColor(SchemeColors schemeColor)
+        {
+            ControlGrouping cg;
+
+            cg = myControlGrouping[schemeColor];
+
+            buttonTokenColor.BackColor = cg.button.BackColor;
+
+            ((Token)(comboBoxToken.SelectedValue)).color = schemeColor.ToString();
+        }
+
+        private void comboBoxToken_SelectedValueChanged(object sender, EventArgs e)
+        {
+            string colorName;
+
+            if (!populatingComboBoxToken)
+            {
+                colorName = ((Windows_Terminal_Customizer.Token)comboBoxToken.SelectedValue).color;
+
+                SetTokenColorFromString(colorName);
+            }
+        }
+
+        private void UpdateTokenAndPreview(SchemeColors schemeColor)
+        {
+            SetTokenColor(schemeColor);
+            UpdatePreview(_currentPreview);
+        }
+
+        private void linkLabelForeground_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            UpdateTokenAndPreview(SchemeColors.Foreground);
+        }
+
+        private void linkLabelWhite_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            UpdateTokenAndPreview(SchemeColors.White);
+        }
+
+        private void linkLabelBlack_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            UpdateTokenAndPreview(SchemeColors.Black);
+        }
+
+        private void linkLabelPurple_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            UpdateTokenAndPreview(SchemeColors.Purple);
+        }
+
+        private void linkLabelBlue_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            UpdateTokenAndPreview(SchemeColors.Blue);
+        }
+
+        private void linkLabelCyan_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            UpdateTokenAndPreview(SchemeColors.Cyan);
+        }
+
+        private void linkLabelGreen_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            UpdateTokenAndPreview(SchemeColors.Green);
+        }
+
+        private void linkLabelYellow_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            UpdateTokenAndPreview(SchemeColors.Yellow);
+        }
+
+        private void linkLabelRed_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            UpdateTokenAndPreview(SchemeColors.Red);
+        }
+
+        private void linkLabelBackground_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            UpdateTokenAndPreview(SchemeColors.Background);
+        }
+
+        private void linkLabelBrightWhite_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            UpdateTokenAndPreview(SchemeColors.BrightWhite);
+        }
+
+        private void linkLabelBrightBlack_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            UpdateTokenAndPreview(SchemeColors.BrightBlack);
+        }
+
+        private void linkLabelBrightPurple_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            UpdateTokenAndPreview(SchemeColors.BrightPurple);
+        }
+
+        private void linkLabelBrightBlue_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            UpdateTokenAndPreview(SchemeColors.BrightBlue);
+        }
+
+        private void linkLabelBrightCyan_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            UpdateTokenAndPreview(SchemeColors.BrightCyan);
+        }
+
+        private void linkLabelBrightGreen_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            UpdateTokenAndPreview(SchemeColors.BrightGreen);
+        }
+
+        private void linkLabelBrightYellow_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            UpdateTokenAndPreview(SchemeColors.BrightYellow);
+        }
+
+        private void linkLabelBrightRed_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            UpdateTokenAndPreview(SchemeColors.BrightRed);
+        }
+    }
+
+    public class TokenSource
+    {
+        public string Name { get; set; }
+        public Token Value { get; set; }
     }
 
     public class ControlGrouping
     {
+        public String name { get; set; }
         public TextBox textBox { get; set; }
-        public Label label { get; set; }
+        public LinkLabel linkLabel { get; set; }
         public Button button { get; set; }
     }
 

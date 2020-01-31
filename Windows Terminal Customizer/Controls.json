@@ -29,7 +29,21 @@
       "24",
       "26",
       "28"
-
+    ],
+    "previews": [
+      "All Characters|characters",
+      "C#|csharp",
+      "CSS|css",
+      "GraphQL|graphql",
+      "Java|java",
+      "JavaScript|javascript",
+      "JSON|json",
+      "HTML|html",
+      "Lorem Ipsum|lorem",
+      "Palette|palette",
+      "PHP|php",
+      "SQL|sql",
+      "TypeScript|typescript"
     ]
   }
 }

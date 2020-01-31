@@ -262,8 +262,8 @@
             // 
             this.tableLayoutPanel12.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel12.ColumnCount = 4;
-            this.tableLayoutPanel12.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 70F));
-            this.tableLayoutPanel12.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 70F));
+            this.tableLayoutPanel12.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 125F));
+            this.tableLayoutPanel12.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 125F));
             this.tableLayoutPanel12.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 115F));
             this.tableLayoutPanel12.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel12.Controls.Add(this.checkBoxRotateImages, 0, 0);
@@ -283,7 +283,7 @@
             this.checkBoxRotateImages.AutoSize = true;
             this.checkBoxRotateImages.Location = new System.Drawing.Point(3, 8);
             this.checkBoxRotateImages.Name = "checkBoxRotateImages";
-            this.checkBoxRotateImages.Size = new System.Drawing.Size(64, 17);
+            this.checkBoxRotateImages.Size = new System.Drawing.Size(119, 17);
             this.checkBoxRotateImages.TabIndex = 24;
             this.checkBoxRotateImages.Text = "Rotate Images";
             this.checkBoxRotateImages.UseVisualStyleBackColor = true;
@@ -293,9 +293,9 @@
             // 
             this.comboBoxRotationSchedule.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBoxRotationSchedule.FormattingEnabled = true;
-            this.comboBoxRotationSchedule.Location = new System.Drawing.Point(258, 6);
+            this.comboBoxRotationSchedule.Location = new System.Drawing.Point(368, 6);
             this.comboBoxRotationSchedule.Name = "comboBoxRotationSchedule";
-            this.comboBoxRotationSchedule.Size = new System.Drawing.Size(606, 21);
+            this.comboBoxRotationSchedule.Size = new System.Drawing.Size(496, 21);
             this.comboBoxRotationSchedule.TabIndex = 28;
             this.comboBoxRotationSchedule.SelectedValueChanged += new System.EventHandler(this.comboBoxRotationSchedule_SelectedValueChanged);
             // 
@@ -303,9 +303,9 @@
             // 
             this.checkBoxRotateSchemes.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.checkBoxRotateSchemes.AutoSize = true;
-            this.checkBoxRotateSchemes.Location = new System.Drawing.Point(73, 8);
+            this.checkBoxRotateSchemes.Location = new System.Drawing.Point(128, 8);
             this.checkBoxRotateSchemes.Name = "checkBoxRotateSchemes";
-            this.checkBoxRotateSchemes.Size = new System.Drawing.Size(64, 17);
+            this.checkBoxRotateSchemes.Size = new System.Drawing.Size(119, 17);
             this.checkBoxRotateSchemes.TabIndex = 29;
             this.checkBoxRotateSchemes.Text = "Rotate Schemes";
             this.checkBoxRotateSchemes.UseVisualStyleBackColor = true;
@@ -315,7 +315,7 @@
             // 
             this.label11.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(157, 10);
+            this.label11.Location = new System.Drawing.Point(267, 10);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(95, 13);
             this.label11.TabIndex = 27;

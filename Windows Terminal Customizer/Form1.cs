@@ -38,6 +38,7 @@ namespace Windows_Terminal_Customizer
         private int minutesRunning;
         private bool pauseRotations;
         private Controls controls;
+        private Syntax syntax;
         public string DefaultComboBoxValue = "<Default>";
 
         private delegate void SafeCallDelegate(TreeNode node, string schemeName);
@@ -73,6 +74,8 @@ namespace Windows_Terminal_Customizer
             debug = GetTrueOrFalseAppSetting("Debug", false);
 
             controls = ReadControls();
+            syntax = ReadSyntax();
+
             startup.Next();
 
             LogIt("Application Started");
@@ -108,7 +111,7 @@ namespace Windows_Terminal_Customizer
             startup.Next();
             userControlProfile1.Setup(this, controls, startup);
             startup.Next();
-            userControlScheme1.Setup(this, controls);
+            userControlScheme1.Setup(this, controls, syntax);
             startup.Next();
 
             myCustomProfile = LoadCustomProfile();
@@ -121,6 +124,19 @@ namespace Windows_Terminal_Customizer
             writeToFileTimer.Tick += new EventHandler(WriteToFile);
             writeToFileTimer.Interval = 1000; // in milliseconds
             writeToFileTimer.Start();
+        }
+
+        private Syntax ReadSyntax()
+        {
+            Syntax syntax;
+
+            using (StreamReader file = File.OpenText("Syntax.json"))
+            {
+                JsonSerializer serializer = new JsonSerializer();
+                syntax = (Syntax)serializer.Deserialize(file, typeof(Syntax));
+            }
+
+            return (syntax);
         }
 
         private Controls ReadControls()
@@ -606,6 +622,21 @@ namespace Windows_Terminal_Customizer
         public string GetSchemesFolder
         {
             get { return schemesFolder; }
+        }
+
+        public string GetPreviewFolder
+        {
+            get
+            {
+                string path;
+                string exePath;
+
+                exePath = System.Reflection.Assembly.GetEntryAssembly().Location;
+
+                path = Path.Combine(Path.GetDirectoryName(exePath), "Preview");
+
+                return (path);
+            }
         }
 
         private bool SchemeNodeExists(string schemeName)
