@@ -95,7 +95,7 @@ namespace Windows_Terminal_Customizer
 
             UpdateResetButton();
             UpdateSaveButtons();
-            PreviewPalette();
+            UpdatePreview(_currentPreview);
         }
 
         private void PopulateLocal(Scheme myScheme)
